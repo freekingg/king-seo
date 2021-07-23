@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <el-row class="title" type="flex" justify="space-between">
-      <el-col :span="8">关键词列表</el-col>
+      <el-col :span="8">文章列表</el-col>
       <el-col :span="8" class="text-right">
         <el-button-group>
           <el-button type="primary" icon="el-icon-plus" @click="addOrUpdateHandle">添加</el-button>

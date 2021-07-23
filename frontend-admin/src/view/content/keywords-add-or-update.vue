@@ -20,7 +20,7 @@
           <el-option v-for="item in categorys" :key="item.id" :label="item.title" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="文件" prop="category_id">
+      <el-form-item label="文件">
         <el-upload
           ref="uploadFile"
           class="upload"
@@ -151,7 +151,17 @@ export default {
           return false
         }
 
+        if(!this.dataForm.path){
+            this.$message({
+            message: '请上传文件',
+            type: 'error',
+          })
+            return
+          }
+
         if (!this.dataForm.id) {
+
+
           try {
             this.loading = true
             await Keyword.createKeyword(this.dataForm)
