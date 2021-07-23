@@ -34,10 +34,11 @@ class Keyword {
     return res
   }
 
-  async getKeywords() {
+  async getKeywords(data) {
     return _axios({
       method: 'get',
       url: 'web/keyword',
+      data
       // handleError: true,
     })
   }

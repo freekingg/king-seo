@@ -3,7 +3,6 @@ import { ParametersException, config } from "lin-mizar";
 const fs = require("fs-extra");
 const path = require("path");
 import readline from "readline";
-import { RSA_X931_PADDING } from "constants";
 
 function getSafeParamId(ctx) {
   const id = toSafeInteger(get(ctx.params, "id"));

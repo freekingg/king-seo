@@ -25,11 +25,12 @@ class Website {
     return res
   }
 
-  async getItems() {
+  async getItems(data) {
     return _axios({
       method: 'get',
       url: 'v1/website',
       handleError: true,
+      data
     })
   }
 }

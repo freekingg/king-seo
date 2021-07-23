@@ -37,10 +37,11 @@ class Category {
     return res
   }
 
-  async getCategorys() {
+  async getCategorys(data) {
     return _axios({
       method: 'get',
       url: 'web/category',
+      data
       // handleError: true,
     })
   }

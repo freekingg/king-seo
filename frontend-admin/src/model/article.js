@@ -33,10 +33,11 @@ class Article {
     return res
   }
 
-  async getArticles() {
+  async getArticles(data) {
     return _axios({
       method: 'get',
       url: 'web/article',
+      data
       // handleError: true,
     })
   }

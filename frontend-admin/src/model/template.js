@@ -32,10 +32,11 @@ class Template {
     return res
   }
 
-  async getTemplates() {
+  async getTemplates(data) {
     return _axios({
       method: 'get',
       url: 'web/tpl',
+      data
       // handleError: true,
     })
   }
