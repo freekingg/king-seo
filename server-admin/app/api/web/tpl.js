@@ -42,7 +42,6 @@ WebTplDaokDtoApi.get('/', async ctx => {
 WebTplDaokDtoApi.post('/sync', async ctx => {
   // 模板目录
   let tplpath = path.join(__dirname, '../../../web/template/index')
-  console.log('tplpath: ', tplpath);
   // 获取目录所有html文件并写入数据库
   let dirs = fs.readdirSync(tplpath);
   let tplDirs = [];
@@ -51,7 +50,7 @@ WebTplDaokDtoApi.post('/sync', async ctx => {
     if (isHtml(curpath)) {
       tplDirs.push({
         name: iterator,
-        path: curpath
+        path: iterator
       })
     }
   }

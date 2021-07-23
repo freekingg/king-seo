@@ -5,7 +5,7 @@ import mount from 'koa-mount';
 import serve from 'koa-static';
 import { config, json, logging, success, jwt, Loader } from 'lin-mizar';
 import { PermissionModel } from './model/permission';
-const views = require('koa-views');
+// const views = require('koa-views');
 const { resolve } = require('path')
 /**
  * 首页
@@ -46,13 +46,12 @@ function applyBodyParse (app) {
 function applyStatic (app, prefix = '/assets') {
   config.setItem('assetsDir', resolve(__dirname, './assets'))
   const assetsDir = config.getItem('file.storeDir', 'app/static');
-  console.log('assetsDir: ', config.getItem('assetsDir'));
   app.use(mount(prefix, serve(assetsDir)));
   app.use(serve(resolve(__dirname, '../web/template/index')))
   app.use(serve(resolve(__dirname, '../web/template/static')))
-  app.use(views(resolve(__dirname, './web/template'), {
-    extension: 'html'
-  }))
+  // app.use(views(resolve(__dirname, './web/template'), {
+  //   extension: 'html'
+  // }))
 }
 
 /**

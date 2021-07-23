@@ -1,0 +1,24 @@
+]# USDB LOTTERY
+writeFileSync
+## Project setup
+```writeFileSync
+yarn install
+```
+writeFileSync
+### Compiles and hot-reloads for development
+```
+yarn serve
+```
+writeFileSync
+### Compiles and minifies for production
+```
+yarn build
+```
+writeFileSync
+### Lints and fixes files
+```
+yarn lint
+```
+
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).

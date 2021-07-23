@@ -10,8 +10,6 @@ import { getSafeParamId } from '../../lib/util';
 import { ItemNotFound } from '../../lib/exception';
 import { WebsiteDao } from '../../dao/web/website';
 
-import Clone from '../../lib/clone';
-
 const websiteApi = new LinRouter({
   prefix: '/v1/website',
   module: '网站'
@@ -49,9 +47,6 @@ websiteApi.get('/search/one', async ctx => {
 
 websiteApi.post('/', async ctx => {
   const v = await new CreateOrUpdateWebsiteValidator().validate(ctx);
-  const targetDomain = v.get('body.targetDomain');
-  const domain = v.get('body.domain');
-  await Clone.create({ domain, targetDomain });
   await websiteDto.createItem(v);
   ctx.success({
     code: 12

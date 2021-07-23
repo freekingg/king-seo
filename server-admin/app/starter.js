@@ -31,14 +31,6 @@ const run = async () => {
   app.listen(port, () => {
     console.log(`listening at http://localhost:${port}`);
   });
-
-  // 根目录创建website文件夹
-  const { mkdirsSync } = require('./lib/util');
-
-  let homedir = os.homedir()
-  const siteDir = path.resolve(homedir, 'website');
-  mkdirsSync(siteDir);
-  config.setItem('website', siteDir);
 };
 
 // 启动应用

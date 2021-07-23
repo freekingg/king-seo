@@ -110,40 +110,39 @@ function isHtml(curPath) {
   }
 }
 
-const space2Array = data => {
-  let oparray = []
-  let res = data
-  res = res.replace(/^\n*/, '')
-  res = res.replace(/\n{2,}/g, '\n')
-  res = res.replace(/\n*$/, '')
-  oparray = res.split('\n')
-  return oparray
-}
+const space2Array = (data) => {
+  let oparray = [];
+  let res = data;
+  res = res.replace(/^\n*/, "");
+  res = res.replace(/\n{2,}/g, "\n");
+  res = res.replace(/\n*$/, "");
+  oparray = res.split("\n");
+  return oparray;
+};
 
 // 读取文件
-function readLineFile (path, lineNum = 0) {
+function readLineFile(path, lineNum = 0) {
   let n = 0;
-  let content = ''
+  let content = "";
   return new Promise((resolve) => {
     let input = fs.createReadStream(path);
     const rl = readline.createInterface({
-      input: input
+      input: input,
     });
     rl.on("line", (line) => {
-      n++
-      content += `${line} \n`
+      n++;
+      content += `${line} \n`;
       if (lineNum && n >= lineNum) {
-        rl.close()
+        rl.close();
         input.destroy();
-        rl.removeAllListeners()
-       
+        rl.removeAllListeners();
       }
     });
     rl.on("close", (line) => {
       console.log("读取完毕！");
-      resolve(content)
+      resolve(content);
     });
-  })
+  });
 }
 
 // 返回随机数字
@@ -152,16 +151,39 @@ const randomA2B = (min, max, int) => {
   return int ? Math.floor(result) : result;
 };
 
-// 返回随机数字
-const randomKey = (path) => {
+// 返回随机行
+const randomKey = (path, num = 1) => {
   return new Promise((resolve) => {
-    let rawData = fs.readFileSync(path)
-    let lines = rawData.toString().split('\n')
-    let randLineNum = Math.floor(Math.random() * lines.length);
-    // console.log(randLineNum);
-    // console.log(lines[randLineNum]);
-    resolve(lines[randLineNum])
-  })
+    let rawData = fs.readFileSync(path);
+    let lines = rawData.toString().split("\n");
+    let data = [];
+    for (let index = 0; index < num; index++) {
+      let randLineNum = Math.floor(Math.random() * lines.length);
+
+      let line = lines[randLineNum];
+      // 去除换行，空格
+      line = line.replace(/<\/?.+?>/g, "");
+      line = line.replace(/[\r\n]/g, "");
+      data.push(line);
+    }
+    resolve(data);
+  });
+};
+
+function left_zero_4(str) {
+  if (str != null && str != "" && str != "undefined") {
+    if (str.length == 2) {
+      return "00" + str;
+    }
+  }
+  return str;
+}
+
+let Unicode = (str)=> {
+  var a = [],
+    i = 0;
+  for (; i < str.length; ) a[i] = str.charCodeAt(i++);
+  return "&#" + a.join(";&#") + ";";
 };
 
 export {
@@ -175,5 +197,6 @@ export {
   isFileExisted,
   readLineFile,
   space2Array,
-  randomKey
+  randomKey,
+  Unicode,
 };

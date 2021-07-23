@@ -6,6 +6,8 @@ module.exports = {
   countDefault: 10,
   pageDefault: 0,
   apiDir: 'app/api',
+  templateDir: path.resolve(__dirname, '../../web/template/index'), // 模板文件夹
+  tempDir: path.resolve(__dirname, '../../web/data/temp'), // 缓存文件夹
   accessExp: 60 * 60, // 1h 单位秒
   // 指定工作目录，默认为 process.cwd() 路径
   baseDir: path.resolve(__dirname, '../../'),

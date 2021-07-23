@@ -1,25 +1,28 @@
 <template>
   <div class="container">
     <el-row class="title" type="flex" justify="space-between">
-      <el-col :span="8">网站列表信息</el-col>
-      <el-col :span="8" class="text-right">
+      <el-col :span="8">以下为已缓存网站</el-col>
+      <!-- <el-col :span="8" class="text-right">
         <el-button-group>
           <el-button type="primary" icon="el-icon-plus" @click="addOrUpdateHandle">添加</el-button>
         </el-button-group>
-      </el-col>
+      </el-col> -->
     </el-row>
     <div class="wrap">
       <el-table size="mini" v-loading="dataListLoading" :data="dataList" border>
-        <el-table-column prop="host" label="域名" header-align="center" align="center" width="150" />
+        <el-table-column prop="host" label="域名" header-align="center" align="center" width="150">
+          <template slot-scope="scope">
+             <el-link :href="'http://'+scope.row.host" target="_blank" type="primary">{{scope.row.host}}</el-link>
+          </template>
+        </el-table-column>
         <el-table-column prop="title" label="标题" header-align="center" align="center" />
         <el-table-column prop="keywords" label="关键字" header-align="center" align="center" />
         <el-table-column prop="template" label="模板" header-align="center" align="center" />
         <el-table-column prop="update_time" label="创建时间" header-align="center" align="center" />
-        <el-table-column label="操作" fixed="right" header-align="center" align="center" width="200">
+        <el-table-column label="操作" fixed="right" header-align="center" align="center" width="100">
           <template slot-scope="scope">
-            <el-button type="success" disabled size="mini" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
-            <el-button type="danger" size="mini" @click="deleteHandle(scope.row.id)">删除</el-button>
-            <el-button type="warning" size="mini" @click="setConfig(scope.row.id)">配置</el-button>
+            <el-button type="danger" size="mini" @click="deleteHandle(scope.row.id)">清除</el-button>
+            <!-- <el-button type="warning" size="mini" @click="setConfig(scope.row.id)">配置</el-button> -->
           </template>
         </el-table-column>
       </el-table>

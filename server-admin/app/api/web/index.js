@@ -2,13 +2,16 @@ import { LinRouter, disableLoading,config } from 'lin-mizar';
 import fs from 'fs-extra';
 import path from 'path';
 import cheerio from 'cheerio';
+import { parse } from 'node-html-parser';
+
+
 
 import {
   TplSearchValidator,
   CreateOrUpdateTplValidator
 } from '../../validator/web/tpl';
 
-import { getSafeParamId, isDirectory, randomA2B, space2Array, randomKey } from '../../lib/util';
+import { getSafeParamId, isDirectory, randomKey, Unicode } from '../../lib/util';
 import { WebTplDao } from '../../dao/web/tpl';
 import { KeywordDao } from '../../dao/web/keyword';
 import { WebsiteDao } from '../../dao/web/website';
@@ -19,82 +22,82 @@ const WebTplDaokDtoApi = new LinRouter({
   module: '首页'
 });
 
-// 模板 的dao 数据库访问层实例
+// dao 数据库访问层实例
 const WebTplDaokDto = new WebTplDao();
 const websiteDto = new WebsiteDao();
 const keywordDaoDto = new KeywordDao();
 const articleDaoDto = new ArticleDao();
 
-// WebTplDaokDtoApi.use('/',async (ctx,next) => {
-//   ctx.body = 2
- 
-// });
-
-WebTplDaokDtoApi.get('/', async ctx => {
-  let { request } = ctx;
-  console.log('当前请求的域名', request.host);
+// 主页面逻辑入口
+WebTplDaokDtoApi.get(['/', '/proxy'], async ctx => {
+  let { request, url } = ctx;
   let host = request.host;
-  
+  let referer = ctx.request.header.referer;
+
+  if (url === '/localhost:5001') return;
+  if (url === '/proxy' && referer) {
+    let r = new URL(referer);
+    host = r.host;
+  }
+  console.log('当前请求的域名:', host);
+
+  let assetsDir = config.getItem('assetsDir')
+  let templateDir = config.getItem('templateDir')
+  let tempDir = config.getItem('tempDir')
+
   // 检查是否有缓存记录
   let site = await websiteDto.getItem(host)
-  console.log(site)
   if (!site) {
-    // 第一次请求
-
-    let assetsDir = config.getItem('assetsDir')
+    // 第一次请求 处理逻辑
 
     // 获取随机模板
     const tpls = await WebTplDaokDto.getRandItems();
-    let randomTplPath = path.join(tpls.path);
-    console.log('当前使用模板: ', randomTplPath);
- 
+    let randomTplPath = path.join(templateDir, tpls.path);
+
     // 数据库获取一条随机关键词数据
     const keywords = await keywordDaoDto.getRandItems();
-
     // 数据库获取一条随机文章数据
     const articles = await articleDaoDto.getRandItems();
-  
-
     // 取随机3个关键词  和随机一条文章
-    let kws1 = await randomKey(path.join(assetsDir, keywords.path))
-    let kws2 = await randomKey(path.join(assetsDir, keywords.path))
-    let kws3 = awai111t randomKey(path.join(assetsDir, keywords.path))
-    console.log('当前使用关键词: ', kws1, kws2, kws3);
-    let kws = `${kws1},${kws2},${kws3}`
-    let article1 = await randomKey(path.join(assetsDir, articles.path))
-    console.log('当前使用文章: ', article1);
-
-    kws = kws.replace(/<\/?.+?>/g,""); 
-    kws = kws.replace(/[\r\n]/g, "");
+    let kwsArr = await randomKey(path.join(assetsDir, keywords.path), 3);
+    let kws = `${kwsArr[0]},${kwsArr[1]},${kwsArr[2]}`;
+    let article1 = await randomKey(path.join(assetsDir, articles.path));
 
     // 模板替换
     let d = fs.readFileSync(randomTplPath);
-    const jq = cheerio.load(d);
-    jq('title').html(`${kws1}_${kws2}_${kws3}`);
-    jq('meta[name="keywords"]').attr('connent', `${kws}`);
-    jq('meta[name="description"]').attr('connent', `${kws}-${article1}`);
+    const root = parse(d);
+    let asciiKey = Unicode(`${kws}`)
+    root.querySelector('title').set_content(`${asciiKey}`);
+    root.querySelector('meta[name="keywords"]').setAttribute('content', `${asciiKey}`);
+    root.querySelector('meta[name="description"]').setAttribute('content', `${asciiKey}-${article1}`);
+    console.log(root.toString());
 
     // 模板目录
-    let tplTmppath = path.join(__dirname, '../../web/data/temp', tpls.name)
-    fs.writeFileSync(tplTmppath, jq.html())
+    let tplTmppath = path.join(tempDir, tpls.name);
+    // console.log(jq.html({decodeEntities: false }));
+    fs.writeFileSync(tplTmppath, root.toString());
    
     let obj = {
       host,
       title: `${kws}`,
       keywords: `${kws}`,
       template: `${tpls.name}`,
-      path: `${tplTmppath}`
-    }
-    await websiteDto.createItem(obj)
-    ctx.body = jq.html();
+      path: `${tpls.name}`
+    };
+    await websiteDto.createItem(obj);
+    ctx.body = root.toString();
+    return;
   }
-  // ctx.body = jq.html();
+  let d = fs.readFileSync(path.join(tempDir, site.path));
+  console.log('直接读取');
+  ctx.body = d.toString();
 });
 
 // 根据模板目录同步数据库
 WebTplDaokDtoApi.post('/sync', async ctx => {
   // 模板目录
-  let tplpath = path.join(__dirname, '../../web/template')
+  let tplpath = path.join(__dirname, '../../../web/template/index')
+  console.log('tplpath: ', tplpath);
   // 获取目录所有一级文件夹
   let dirs = fs.readdirSync(tplpath);
   let tplDirs = [];
