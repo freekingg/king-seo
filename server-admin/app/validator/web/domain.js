@@ -10,7 +10,7 @@ class DomainSearchValidator extends LinValidator {
 class CreateOrUpdateDomainValidator extends LinValidator {
   constructor () {
     super();
-    this.title = new Rule('isNotEmpty', '必须传入分类名');
+    this.domain = new Rule('isNotEmpty', '必须传入域名列表');
   }
 }
 

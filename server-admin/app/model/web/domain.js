@@ -8,7 +8,7 @@ class Domain extends Model {
   toJSON () {
     const origin = {
       id: this.id,
-      domain: this.domain,
+      host: this.host,
       category: this.category,
       category_id: this.category_id,
       summary: this.summary,
@@ -25,8 +25,9 @@ Domain.init(
       primaryKey: true,
       autoIncrement: true
     },
-    domain: {
-      type: Sequelize.STRING(50),
+    host: {
+      type: Sequelize.STRING(100),
+      unique: true,
       allowNull: false
     },
     category_id: {
@@ -45,9 +46,9 @@ Domain.init(
       modelName: 'domain',
       indexes: [
         {
-          name: 'domain_del',
+          name: 'host_del',
           unique: true,
-          fields: ['domain', 'delete_time']
+          fields: ['host', 'delete_time']
         }
       ]
     },

@@ -26,6 +26,11 @@ CategoryConfig.init(
       type: Sequelize.STRING(50),
       allowNull: false
     },
+    // 全局js
+    globalJs: {
+      type: Sequelize.TEXT,
+      allowNull: true
+    },
     summary: {
       type: Sequelize.STRING(200),
       allowNull: true

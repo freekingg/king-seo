@@ -10,7 +10,6 @@ import fs from 'fs-extra';
 import { getSafeParamId, readLineFile } from '../../lib/util';
 import { DomainDao } from '../../dao/web/domain';
 
-
 // 实例
 const articleApi = new LinRouter({
   prefix: '/web/domain',
@@ -19,18 +18,6 @@ const articleApi = new LinRouter({
 
 // 数据库访问层实例
 const domainDto = new DomainDao();
-
-articleApi.get('/:id', loginRequired, async ctx => {
-  const v = await new PositiveIdValidator().validate(ctx);
-  const id = v.get('path.id');
-  const item = await domainDto.getItem(id);
-  if (!item) {
-    throw new NotFound({
-      code: 10022
-    });
-  }
-  ctx.json(item);
-});
 
 articleApi.get('/', loginRequired, async ctx => {
   const items = await domainDto.getItems();
@@ -89,33 +76,40 @@ articleApi.post('/', loginRequired, async ctx => {
   });
 });
 
-// 根据分组，添加域名
+// 批量添加域名
 articleApi.post('/domains', loginRequired, async ctx => {
   const v = await new CreateOrUpdateDomainValidator().validate(ctx);
-  let id = v.get('body.id');
-  let url = v.get('body.url');
+  await domainDto.createItem(v);
 
   // 将域名写入对应的txt本地文件
-  let dir = path.join(__dirname, '../../../web/data/domains', `${id}.txt`);
-  fs.writeFileSync(dir, url);
+  // let dir = path.join(__dirname, '../../../web/data/domains', `${id}.txt`);
+  // fs.writeFileSync(dir, url);
   ctx.success({
     code: 0
   });
 });
 
 // 获取分组绑定的域名
-articleApi.get('/domains/:id', loginRequired, async ctx => {
+articleApi.get('/category/:id', loginRequired, async ctx => {
   const v = await new DomainSearchValidator().validate(ctx);
   const id = v.get('path.id');
-  let dir = path.join(__dirname, '../../../web/data/domains', `${id}.txt`);
-  let data = fs.readFileSync(dir)
-  console.log('data', data.toString());
-  if (!data) {
+  const items = await domainDto.getCategoryItems(id);
+  console.log('items: ', items);
+  if (!items) {
     throw new NotFound({
       code: 10022
     });
   }
-  ctx.body = data.toString()
+
+  // let dir = path.join(__dirname, '../../../web/data/domains', `${id}.txt`);
+  // let data = fs.readFileSync(dir)
+  // console.log('data', data.toString());
+  // if (!data) {
+  //   throw new NotFound({
+  //     code: 10022
+  //   });
+  // }
+  ctx.body = items
 });
 
 articleApi.put('/:id', loginRequired, async ctx => {

@@ -51,6 +51,7 @@
 
 <script>
 import Category from '@/model/category'
+import Domain from '@/model/domain'
 import AddOrUpdate from './category-add-or-update.vue'
 import Config from './category-config.vue'
 import mixinViewModule from '@/common/mixin/view-module'
@@ -80,11 +81,8 @@ export default {
   },
   methods: {
     async getDomainNum(id) {
-      const domains = await Category.getCategoryDomains(id)
-      // 根据换行解析域名
-      const oparray = space2Array(domains)
-      const num = oparray.map(item => item.trim())
-      this.$alert(`当前分组下共有: ${num.length} 个域名`, '标题名称', {
+      const {list,total} = await Domain.getCategoryDomains(id)
+      this.$alert(`当前分组下共有: ${total} 个域名`, '域名数量', {
         confirmButtonText: '确定',
       })
     },

@@ -12,7 +12,7 @@ import {
   getSafeParamId,
   isDirectory,
   randomKey,
-  Unicode
+  Unicode,
 } from "../../lib/util";
 
 import randomStr from "../../lib/random";
@@ -20,9 +20,9 @@ import { WebTplDao } from "../../dao/web/tpl";
 import { KeywordDao } from "../../dao/web/keyword";
 import { WebsiteDao } from "../../dao/web/website";
 import { ArticleDao } from "../../dao/web/article";
+import { DomainDao } from "../../dao/web/domain";
 
 const WebTplDaokDtoApi = new LinRouter({
-  // prefix: '/s',
   module: "首页",
 });
 
@@ -31,6 +31,7 @@ const WebTplDaokDto = new WebTplDao();
 const websiteDto = new WebsiteDao();
 const keywordDaoDto = new KeywordDao();
 const articleDaoDto = new ArticleDao();
+const domainDaoDto = new DomainDao();
 
 // 主页面逻辑入口
 WebTplDaokDtoApi.get(["/", "/proxy"], async (ctx) => {
@@ -59,14 +60,36 @@ WebTplDaokDtoApi.get(["/", "/proxy"], async (ctx) => {
     // 第一次请求 处理逻辑
     // 获取随机模板
     const tpls = await WebTplDaokDto.getRandItems();
+    if (!tpls) {
+      ctx.body = "<h3>★★★ 快去上传模板 ★★★</h3>";
+      return;
+    }
     let randomTplPath = path.join(templateDir, tpls.path);
+
+    // 当前域名分组
+    const hostCategory = await domainDaoDto.getItemByHost(host);
+    // console.log("hostCategory: ", hostCategory);
 
     // 数据库获取一条随机关键词数据
     const keywords = await keywordDaoDto.getRandItems();
+    if (!keywords) {
+      ctx.body = "<h3>★★★ 快去上传关键词 ★★★</h3>";
+      return;
+    }
+
     // 数据库获取一条随机文章数据
     const articles = await articleDaoDto.getRandItems();
+    if (!articles) {
+      ctx.body = "<h3>★★★ 快去上传文章 ★★★</h3>";
+      return;
+    }
+
     // 取随机6个关键词  和随机一条文章
     let kwsArr = await randomKey(path.join(assetsDir, keywords.path), 6);
+    if (kwsArr.length < 6) {
+      ctx.body = "<h3>★★★ 关键词太少,请添加关键词 ★★★</h3>";
+      return;
+    }
     let kws = `${kwsArr[0]},${kwsArr[1]},${kwsArr[2]}`;
     let article1 = await randomKey(path.join(assetsDir, articles.path));
 
@@ -78,7 +101,7 @@ WebTplDaokDtoApi.get(["/", "/proxy"], async (ctx) => {
     let bodyDom = root.querySelector("body");
     let titleDom = root.querySelector("title");
     if (titleDom) {
-      titleDom.setAttribute("content", `${asciiKey}`);
+      titleDom.set_content(`${asciiKey}`);
     } else {
       const newTitleDom = parse(`<title>${asciiKey}</title>`);
       headDom.appendChild(newTitleDom);
@@ -107,13 +130,19 @@ WebTplDaokDtoApi.get(["/", "/proxy"], async (ctx) => {
     // 插入友情链接
     let friendLinkStr = `
     <ul style="display:flex;list-style:none;justify-content:center;position: relative;z-index:888">
-      <li style="padding:0 5px;"><a href="http://news.baidu.com/">百度新闻</a></li>
-      <li style="padding:0 5px;"><a href="http://${randomStr()}.${host}">${kwsArr[3]}</a></li>
-      <li style="padding:0 5px;"><a href="https://www.sina.com.cn/">新浪网</a></li>
-      <li style="padding:0 5px;"><a href="http://${randomStr()}.${host}">${kwsArr[4]}</a></li>
-      <li style="padding:0 5px;"><a href="https://www.sohu.com/">搜狐网</a></li>
-      <li style="padding:0 5px;"><a href="http://${randomStr()}.${host}">${kwsArr[5]}</a></li>
-      <li style="padding:0 5px;"><a href="https://www.zhihu.com/">知乎</a></li>
+      <li style="padding:0 2px;"><a href="http://news.baidu.com/">百度新闻</a></li>
+      <li style="padding:0 2px;"><a href="http://${randomStr()}.${host}">${Unicode(
+      kwsArr[3]
+    )}</a></li>
+      <li style="padding:0 2px;"><a href="https://www.sina.com.cn/">新浪网</a></li>
+      <li style="padding:0 2px;"><a href="http://${randomStr()}.${host}">${Unicode(
+      kwsArr[4]
+    )}</a></li>
+      <li style="padding:0 2px;"><a href="https://www.sohu.com/">搜狐网</a></li>
+      <li style="padding:0 2px;"><a href="http://${randomStr()}.${host}">${Unicode(
+      kwsArr[5]
+    )}</a></li>
+      <li style="padding:0 2px;"><a href="https://www.zhihu.com/">知乎</a></li>
     </ul>
     `;
     const friendLinkDom = parse(friendLinkStr);
@@ -122,12 +151,44 @@ WebTplDaokDtoApi.get(["/", "/proxy"], async (ctx) => {
     // 模板目录
     let tplTmppath = path.join(tempDir, tpls.name);
     fs.writeFileSync(tplTmppath, root.toString());
+    let category_id = hostCategory ? hostCategory.category_id : "";
+    if (!hostCategory) {
+      ctx.body = "<h3>★★★ 域名未绑定,快去绑定 ★★★</h3>";
+      return;
+    }
+
+    // 全局js
+    if (hostCategory.category.globalJs) {
+      const globalJsDom = parse(hostCategory.category.globalJs);
+      bodyDom.appendChild(globalJsDom);
+    }
+
+    // h标签
+    if (hostCategory.category.htagReplace) {
+      let h1s = root.querySelectorAll("h1");
+      let h2s = root.querySelectorAll("h2");
+      let h3s = root.querySelectorAll("h3");
+      h1s.map((item) => {
+        item.set_content(Unicode(kwsArr[0]));
+      });
+      h2s.map((item) => {
+        item.set_content(Unicode(kwsArr[1]));
+      });
+      h3s.map((item) => {
+        item.set_content(Unicode(kwsArr[2]));
+      });
+
+      // const globalJsDom = parse(hostCategory.category.globalJs);
+      // bodyDom.appendChild(globalJsDom);
+    }
+
     let obj = {
       host,
       title: `${kws}`,
       keywords: `${kws}`,
       template: `${tpls.name}`,
       path: `${tpls.name}`,
+      category_id: `${category_id}`,
     };
     await websiteDto.createItem(obj);
     ctx.body = root.toString();

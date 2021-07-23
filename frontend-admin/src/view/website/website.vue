@@ -1,7 +1,22 @@
 <template>
   <div class="container">
-    <el-row class="title" type="flex" justify="space-between">
-      <el-col :span="8">以下为已缓存网站</el-col>
+    <el-row class="title container-header" type="flex">
+      <el-col :span="4">以下为已缓存网站</el-col>
+      <el-col :span="20">
+        <el-form :inline="true"  size="mini" :model="dataForm" @keyup.enter.native="getDataList()">
+          <el-form-item>
+            <el-input v-model="dataForm.title" placeholder="请输入域名" clearable />
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="dataForm.title" placeholder="请输入域名" clearable />
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" icon="el-icon-plus" @click="addOrUpdateHandle">查询</el-button>
+          </el-form-item>
+      </el-form>
+      </el-col>
+
+
       <!-- <el-col :span="8" class="text-right">
         <el-button-group>
           <el-button type="primary" icon="el-icon-plus" @click="addOrUpdateHandle">添加</el-button>
@@ -12,12 +27,13 @@
       <el-table size="mini" v-loading="dataListLoading" :data="dataList" border>
         <el-table-column prop="host" label="域名" header-align="center" align="center" width="150">
           <template slot-scope="scope">
-             <el-link :href="'http://'+scope.row.host" target="_blank" type="primary">{{scope.row.host}}</el-link>
+            <el-link :href="'http://' + scope.row.host" target="_blank" type="primary">{{ scope.row.host }}</el-link>
           </template>
         </el-table-column>
         <el-table-column prop="title" label="标题" header-align="center" align="center" />
         <el-table-column prop="keywords" label="关键字" header-align="center" align="center" />
         <el-table-column prop="template" label="模板" header-align="center" align="center" />
+        <el-table-column prop="category.title" label="分组" header-align="center" align="center" />
         <el-table-column prop="update_time" label="创建时间" header-align="center" align="center" />
         <el-table-column label="操作" fixed="right" header-align="center" align="center" width="100">
           <template slot-scope="scope">
@@ -58,7 +74,7 @@ import mixinViewModule from '@/common/mixin/view-module'
 export default {
   components: {
     AddOrUpdate,
-    Config
+    Config,
   },
   mixins: [mixinViewModule],
   async created() {
@@ -89,7 +105,7 @@ export default {
       this.$nextTick(() => {
         this.$refs.config.init(id)
       })
-    }
+    },
   },
 }
 </script>

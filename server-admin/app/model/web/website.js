@@ -2,6 +2,7 @@ import { InfoCrudMixin } from 'lin-mizar';
 import { merge } from 'lodash';
 import { Sequelize, Model } from 'sequelize';
 import sequelize from '../../lib/db';
+import { Category as CategoryModals } from './category';
 
 class Website extends Model {
   toJSON () {
@@ -12,6 +13,8 @@ class Website extends Model {
       description: this.description,
       keywords: this.keywords,
       template: this.template,
+      category: this.category,
+      category_id: this.category_id,
       path: this.path,
       update_time: this.update_time
     };
@@ -34,6 +37,10 @@ Website.init(
     title: {
       type: Sequelize.STRING(300),
       allowNull: true
+    },
+    category_id: {
+      type: Sequelize.INTEGER,
+      allowNull: false
     },
     description: {
       type: Sequelize.STRING(500),
@@ -69,4 +76,5 @@ Website.init(
   )
 );
 
+Website.belongsTo(CategoryModals, { foreignKey: 'category_id', targetKey: 'id' });
 export { Website };

@@ -1,52 +1,53 @@
-import { NotFound, Forbidden } from 'lin-mizar';
-import Sequelize from 'sequelize';
+import { NotFound, Forbidden } from "lin-mizar";
+import Sequelize from "sequelize";
 
-import { Domain as Modals } from '../../model/web/domain';
-import { Category as categoryModals } from '../../model/web/category';
+import { Domain as Modals } from "../../model/web/domain";
+import { Category as categoryModals } from "../../model/web/category";
 
 class DomainDao {
   async getItem(id) {
     const item = await Modals.findOne({
       where: {
-        id
+        id,
       },
       include: [
         {
           model: categoryModals,
-          as: 'category'
-        }
-      ]
+          as: "category",
+        },
+      ],
     });
     return item;
   }
 
   // 随机取一条数据
-  async getRandItems () {
+  async getRandItems() {
     const item = await Modals.findOne({
-      order: [Sequelize.literal('rand()')]
+      order: [Sequelize.literal("rand()")],
     });
     return item;
   }
 
-  async getItemByKeyword(q) {
+  async getItemByHost(host) {
     const item = await Modals.findOne({
       where: {
-        host: {
-          [Sequelize.Op.like]: `%${q}%`
-        }
-      }
-    });
-    return item;
-  }
-
-  async getItems() {
-    const { rows, count } = await Modals.findAndCountAll({
+        host
+      },
       include: [
         {
           model: categoryModals,
-          as: 'category'
-        }
-      ]
+          as: "category",
+        },
+      ],
+    });
+    return item;
+  }
+
+  async getCategoryItems(category_id) {
+    const { rows, count } = await Modals.findAndCountAll({
+      where: {
+        category_id
+      }
     });
     return {
       list: rows,
@@ -54,47 +55,57 @@ class DomainDao {
     };
   }
 
-  async createItem(v) {
-    const item = await Modals.findOne({
-      where: {
-        host: v.get('body.host')
-      }
+  async getItems() {
+    const { rows, count } = await Modals.findAndCountAll({
+      include: [
+        {
+          model: categoryModals,
+          as: "category",
+        },
+      ],
     });
-    if (item) {
+    return {
+      list: rows,
+      total: count,
+    };
+  }
+
+  async createItem(v) {
+    let domains = v.get("body.domain");
+    const item = await Modals.bulkCreate(domains, {
+      updateOnDuplicate: ["host","category_id"],
+      ignoreDuplicates: true,
+    });
+    if (!item) {
       throw new Forbidden({
-        code: 10240
+        code: 10240,
       });
     }
-
-    const built = new Modals();
-    built.host = v.get('body.host');
-    built.category_id = v.get('body.category_id');
-    built.summary = v.get('body.summary');
-    await built.save();
+    return true;
   }
 
   async updateItem(v, id) {
     const item = await Modals.findByPk(id);
     if (!item) {
       throw new NotFound({
-        code: 10022
+        code: 10022,
       });
     }
-    item.host = v.get('body.host');
-    item.category_id = v.get('body.category_id');
-    item.summary = v.get('body.summary');
+    item.host = v.get("body.host");
+    item.category_id = v.get("body.category_id");
+    item.summary = v.get("body.summary");
     await item.save();
   }
 
   async deleteItem(id) {
     const item = await Modals.findOne({
       where: {
-        id
-      }
+        id,
+      },
     });
     if (!item) {
       throw new NotFound({
-        code: 10022
+        code: 10022,
       });
     }
     item.destroy();

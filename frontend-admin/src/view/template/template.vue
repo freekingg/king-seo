@@ -4,8 +4,8 @@
       <el-col :span="8">分组列表信息</el-col>
       <el-col :span="8" class="text-right">
         <el-button-group>
-          <el-button type="primary" icon="el-icon-plus" @click="addOrUpdateHandle">添加</el-button>
-          <el-button type="danger" :loading="syncLoading" icon="el-icon-picture-outline-round" @click="syncTemplate">同步数据</el-button>
+          <!-- <el-button type="primary" icon="el-icon-plus" @click="addOrUpdateHandle">添加</el-button> -->
+          <el-button type="danger" :loading="syncLoading" icon="el-icon-picture-outline-round" @click="syncTemplate">同步文件夹中模板数据</el-button>
         </el-button-group>
       </el-col>
     </el-row>

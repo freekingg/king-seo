@@ -53,6 +53,10 @@ export default {
   }
 }
 .container {
+  .container-header{
+    display: flex;
+    justify-content: flex-start;
+  }
   .title {
     height: 59px;
     line-height: 59px;

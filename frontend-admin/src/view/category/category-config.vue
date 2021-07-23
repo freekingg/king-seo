@@ -1,7 +1,6 @@
 <template>
   <el-dialog :visible.sync="visible" title="配置" :close-on-click-modal="false" :close-on-press-escape="false">
     <el-tabs type="border-card">
-
       <!-- 域名管理 -->
       <el-tab-pane label="域名管理">
         <el-form :model="dataFormDomain" :rules="dataRule" ref="dataFormDomain" label-width="80px">
@@ -39,31 +38,45 @@
             </code>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="submitLinks">提交</el-button>
+            <!-- <el-button type="primary" @click="submitLinks">提交</el-button> -->
           </el-form-item>
         </el-form>
       </el-tab-pane>
       <el-tab-pane label="替换管理">
         <el-form :model="dataFormReplace" :rules="dataRule" ref="dataFormReplace" label-width="100px">
-          <el-form-item  label="H标签替换">
-            <el-checkbox-group v-model="dataFormReplace.type">
-              <el-checkbox label="H1标签" name="H1"></el-checkbox>
-              <el-checkbox label="H2标签" name="H2"></el-checkbox>
-              <el-checkbox label="H3标签" name="H3"></el-checkbox>
-              <el-checkbox label="H4标签" name="H4"></el-checkbox>
-            </el-checkbox-group>
-            <p>（将模板中的H标签，h1...h5替换成栏目库文字并自动加上对应的关键字）</p>
+          <el-form-item label="H标签替换">
+            <el-switch v-model="dataFormReplace.htagReplace"></el-switch>
           </el-form-item>
           <el-form-item label="H标签链接">
-              <el-switch v-model="dataFormReplace.delivery"></el-switch>
+            <el-switch v-model="dataFormReplace.htagLink"></el-switch>
           </el-form-item>
 
           <el-form-item>
-            <el-button type="primary" @click="submitDomains">提交</el-button>
+            <el-button type="primary" @click="submitReplaceForm">提交</el-button>
           </el-form-item>
         </el-form>
       </el-tab-pane>
-      <el-tab-pane label="定时任务补偿">定时任务补偿</el-tab-pane>
+      <el-tab-pane label="全局代码">
+        <el-form :model="globalForm" :rules="dataRule" ref="globalForm" label-width="80px">
+          <el-form-item label="代码" prop="globalJs">
+            <el-input
+              v-model="globalForm.globalJs"
+              :autosize="{ minRows: 15, maxRows: 15 }"
+              type="textarea"
+              placeholder="请输入js代码"
+              clearable
+            ></el-input>
+          </el-form-item>
+          <el-form-item>
+            <code>
+              可插入任意js代码,如统计代码，等等...(注意需要放在script标签内)
+            </code>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="submitGlobalForm">提交</el-button>
+          </el-form-item>
+        </el-form>
+      </el-tab-pane>
     </el-tabs>
 
     <!-- <template slot="footer">
@@ -76,6 +89,7 @@
 <script>
 import Config from '@/config'
 import Category from '@/model/category'
+import Domain from '@/model/domain'
 import { space2Array, isUrl } from '../../common/utils'
 
 export default {
@@ -96,6 +110,19 @@ export default {
       callback()
     }
 
+    const checkJs = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('内容不能为空'))
+      }
+
+      let t = /<script.*?>([\s\S]+?)<\/script>/img
+
+      if (!t.test(value)) {
+        return callback(new Error('内容格式不正确,代码要写在script标签里面'))
+      }
+      callback()
+    }
+
     return {
       Config,
       visible: false,
@@ -105,13 +132,18 @@ export default {
         url: '',
       },
       dataFormReplace: {
-        type: ''
+        htagReplace: false,
+        htagLink: false
       },
       dataFormLink: {
         content: '',
       },
+      globalForm: {
+        globalJs: '',
+      },
       dataRule: {
         url: [{ required: true, message: '请输入域名', trigger: 'blur' }],
+        globalJs: [{ validator: checkJs,required: true, trigger: 'blur' }],
         targetDomain: [{ validator: checkUrl, required: true, trigger: 'blur' }],
       },
       rules: {
@@ -129,15 +161,40 @@ export default {
       this.$nextTick(async () => {
         this.$refs.dataFormDomain.resetFields()
         if (this.id) {
-          const domains = await Category.getCategoryDomains(this.id)
-          this.dataFormDomain.url = domains.trim() || ''
+          // 获取域名
+          const {list,total} = await Domain.getCategoryDomains(this.id)
+         let urls = ''
+         list.map(item=>{
+            urls += `${item.host}\n`
+          })
+          this.dataFormDomain.url = urls
+          this.globalForm.globalJs = this.data.globalJs;
+          this.dataFormReplace.htagReplace = this.data.htagReplace;
+          this.dataFormReplace.htagLink = this.data.htagLink;
         }
       })
     },
     resetForm(formName) {
       this.$refs[formName].resetFields()
     },
-    submitLinks(){},
+
+    async submitReplaceForm(){
+      if (this.id) {
+       try {
+            this.loading = true
+            await Category.editCategory(this.id, {...this.data,...this.dataFormReplace,})
+            this.$message({
+              message: '修改成功',
+              type: 'success',
+              duration: 500,
+            })
+            this.$emit('refreshDataList')
+          } catch (e) {
+            this.loading = false
+            console.log(e)
+          }
+        }
+    },
     // 添加域名
     async submitDomains() {
       this.$refs.dataFormDomain.validate(async valid => {
@@ -148,13 +205,18 @@ export default {
           this.loading = true
           // 根据换行解析域名
           const oparray = space2Array(this.dataFormDomain.url)
-          const domains = oparray.map(item => item.trim())
+          const domains = oparray.map((item,index) => {
+            return {
+              host: item.trim(),
+              category_id: this.id
+            }
+          })
           this.dataFormDomain.domain = domains
           this.dataFormDomain.id = this.id
 
           try {
             this.loading = true
-            await Category.createDomains(this.dataFormDomain)
+            await Domain.createDomains(this.dataFormDomain)
             this.$message({
               message: '添加域名成功',
               type: 'success',
@@ -168,60 +230,25 @@ export default {
       })
     },
     // 表单提交
-    async dataFormSubmitHandle() {
-      this.$refs.dataForm.validate(async valid => {
+    async submitGlobalForm() {
+      this.$refs.globalForm.validate(async valid => {
         if (!valid) {
           return false
         }
-        if (!this.dataForm.id) {
-          // 根据换行解析域名
-          const oparray = space2Array(this.dataForm.url)
-          const domains = oparray.map(item => item.trim())
-          this.dataForm.domain = domains
 
-          console.log(this.dataForm)
-
-          try {
+        try {
             this.loading = true
-            await Website.createItem(this.dataForm)
-            this.$message({
-              message: '添加成功',
-              type: 'success',
-              duration: 500,
-              onClose: () => {
-                this.visible = false
-                this.$emit('refreshDataList')
-              },
-            })
-            this.loading = false
-          } catch (e) {
-            this.loading = false
-            console.log(e)
-          }
-        } else {
-          try {
-            this.loading = true
-            // 根据换行解析域名
-            const oparray = space2Array(this.dataForm.url)
-            const domains = oparray.map(item => item.trim())
-            this.dataForm.domain = domains
-
-            await Website.editItem(this.dataForm.id, this.dataForm)
+            await Category.editCategory(this.id, {...this.data,...this.globalForm})
             this.$message({
               message: '修改成功',
               type: 'success',
               duration: 500,
-              onClose: () => {
-                this.visible = false
-                this.$emit('refreshDataList')
-              },
             })
-            this.loading = false
+            this.$emit('refreshDataList')
           } catch (e) {
             this.loading = false
             console.log(e)
           }
-        }
       })
     },
     handleSuccessImage(response, file, fileList) {

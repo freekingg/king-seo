@@ -1,5 +1,5 @@
 const categoryRouter = {
-  title: '分组管理',
+  title: '站群管理',
   type: 'view',
   name: 'category',
   route: '/category',

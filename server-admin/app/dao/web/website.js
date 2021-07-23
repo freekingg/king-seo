@@ -1,6 +1,7 @@
 import { NotFound, Forbidden } from 'lin-mizar';
 import Sequelize from 'sequelize';
 import { Website } from '../../model/web/website';
+import { Category as categoryModals } from '../../model/web/category';
 
 class WebsiteDao {
   async getItem (host) {
@@ -26,21 +27,21 @@ class WebsiteDao {
   async getItems (v) {
     const page = v.get('query.page');
     const limit = v.get('query.count');
-    const title = v.get('query.title');
+    const host = v.get('query.host') || '';
     const condition = {};
 
     const { rows, count } = await Website.findAndCountAll({
       where: Object.assign({}, condition, {
-        title: {
-          [Sequelize.Op.like]: `%${title}%`
+        host: {
+          [Sequelize.Op.like]: `%${host}%`
         }
       }),
-      // include: [
-      //   {
-      //     model: categoryModals,
-      //     as: 'category'
-      //   }
-      // ],
+      include: [
+        {
+          model: categoryModals,
+          as: 'category'
+        }
+      ],
       order: [['create_time', 'DESC']],
       offset: page * limit,
       limit: limit
@@ -63,6 +64,7 @@ class WebsiteDao {
     const bk = new Website();
     bk.host = data.host;
     bk.title = data.title;
+    bk.category_id = data.category_id;
     bk.description = data.description;
     bk.keywords = data.keywords;
     bk.template = data.template;
@@ -79,6 +81,7 @@ class WebsiteDao {
     }
     item.title = v.get('body.title');
     item.domain = v.get('body.domain');
+    item.category_id = v.get('body.category_id');
     item.targetDomain = v.get('body.targetDomain');
     item.summary = v.get('body.summary');
     item.open = v.get('body.open');
