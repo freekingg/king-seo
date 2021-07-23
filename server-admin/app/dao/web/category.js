@@ -58,8 +58,10 @@ class CategoryDao {
     }
     item.title = v.get('body.title');
     item.globalJs = v.get('body.globalJs');
+    item.cacheType = v.get('body.cacheType');
     item.htagReplace = v.get('body.htagReplace');
     item.htagLink = v.get('body.htagLink');
+    item.atagLink = v.get('body.atagLink');
     item.summary = v.get('body.summary');
     await item.save();
   }

@@ -33,16 +33,20 @@ const keywordDaoDto = new KeywordDao();
 const articleDaoDto = new ArticleDao();
 const domainDaoDto = new DomainDao();
 
+WebTplDaokDtoApi.get("/neiye", async (ctx) => {
+  ctx.body = 'neirong'
+})
+
 // 主页面逻辑入口
 WebTplDaokDtoApi.get(["/", "/proxy"], async (ctx) => {
   let { request, url } = ctx;
   let host = request.host;
   let referer = ctx.request.header.referer;
-
-  if (url === "/proxy" && referer) {
-    let r = new URL(referer);
-    host = r.host;
-  }
+  console.log(ctx);
+  // if (url === "/proxy" && referer) {
+  //   let r = new URL(referer);
+  //   host = r.host;
+  // }
 
   if (url === "localhost:5001") {
     console.log("localhost:5001,返回");
@@ -198,6 +202,8 @@ WebTplDaokDtoApi.get(["/", "/proxy"], async (ctx) => {
   console.log("直接读取", site.path);
   ctx.body = d.toString();
 });
+
+
 
 // 根据模板目录同步数据库
 WebTplDaokDtoApi.post("/sync", async (ctx) => {

@@ -11,7 +11,9 @@ class Category extends Model {
       summary: this.summary,
       globalJs: this.globalJs,
       htagReplace: this.htagReplace,
+      cacheType: this.cacheType,
       htagLink: this.htagLink,
+      atagLink: this.atagLink,
       update_time: this.update_time
     };
     return origin;
@@ -34,12 +36,22 @@ Category.init(
       type: Sequelize.TEXT,
       allowNull: true
     },
+    cacheType: {
+      type: Sequelize.INTEGER(2),
+      defaultValue: 2,
+      comment: '分组级别 1：不缓存 2：仅蜘蛛缓存 3：全部不缓存'
+    },
     htagReplace: {
       type: Sequelize.BOOLEAN,
       comment: '0：关闭 1：开启',
       defaultValue: 0
     },
     htagLink: {
+      type: Sequelize.BOOLEAN,
+      comment: '0：关闭 1：开启',
+      defaultValue: 0
+    },
+    atagLink: {
       type: Sequelize.BOOLEAN,
       comment: '0：关闭 1：开启',
       defaultValue: 0

@@ -10,6 +10,13 @@ app.use(proxy('/static/*', {
 }))
 
 // 代理根路径
+app.use(proxy('/a/*/*.html', {
+  target: 'http://localhost:5001/',    
+  rewrite: path => path.replace(/(.*)/, '/neiye'),
+  // logs: true
+}))
+
+// 代理根路径
 app.use(proxy('/', {
   target: 'http://localhost:5001/',    
   rewrite: path => path.replace(/(.*)/, '/proxy'),

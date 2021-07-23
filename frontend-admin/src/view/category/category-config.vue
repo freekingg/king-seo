@@ -19,40 +19,22 @@
         </el-form>
       </el-tab-pane>
 
-      <!-- 外互链 -->
-      <el-tab-pane label="友情链接">
-        <el-form :model="dataFormLink" ref="dataFormLink" label-width="80px">
-          <el-form-item label="友情链接">
-            <el-input
-              v-model="dataFormLink.content"
-              :autosize="{ minRows: 8, maxRows: 8 }"
-              type="textarea"
-              :disabled="true"
-              placeholder="权重站|关键词|权重站|关键词|权重站|关键词|权重站"
-              clearable
-            ></el-input>
+
+      <el-tab-pane label="缓存设置">
+        <el-form :model="dataFormCache" :rules="dataRule" ref="dataFormCache" label-width="100px">
+          <el-form-item label="页面缓存">
+            <el-radio-group v-model="dataFormCache.cacheType">
+              <el-radio :label="1">不缓存</el-radio>
+              <el-radio :label="2">仅蜘蛛缓存</el-radio>
+              <el-radio :label="3">全部缓存</el-radio>
+            </el-radio-group>
           </el-form-item>
-          <el-form-item label="目前固定">
-            <code>
-              权重站|关键词|权重站|关键词|权重站|关键词|权重站
-            </code>
-          </el-form-item>
-          <el-form-item>
-            <!-- <el-button type="primary" @click="submitLinks">提交</el-button> -->
-          </el-form-item>
-        </el-form>
-      </el-tab-pane>
-      <el-tab-pane label="替换管理">
-        <el-form :model="dataFormReplace" :rules="dataRule" ref="dataFormReplace" label-width="100px">
-          <el-form-item label="H标签替换">
-            <el-switch v-model="dataFormReplace.htagReplace"></el-switch>
-          </el-form-item>
-          <el-form-item label="H标签链接">
+          <!-- <el-form-item label="redis缓存">
             <el-switch v-model="dataFormReplace.htagLink"></el-switch>
-          </el-form-item>
+          </el-form-item> -->
 
           <el-form-item>
-            <el-button type="primary" @click="submitReplaceForm">提交</el-button>
+            <el-button type="primary" @click="submitCacheForm">提交</el-button>
           </el-form-item>
         </el-form>
       </el-tab-pane>
@@ -77,6 +59,47 @@
           </el-form-item>
         </el-form>
       </el-tab-pane>
+      <el-tab-pane label="替换管理">
+        <el-form :model="dataFormReplace" :rules="dataRule" ref="dataFormReplace" label-width="100px">
+          <el-form-item label="H标签替换">
+            <el-switch v-model="dataFormReplace.htagReplace"></el-switch>
+          </el-form-item>
+          <el-form-item label="H标签链接">
+            <el-switch v-model="dataFormReplace.htagLink"></el-switch>
+          </el-form-item>
+          <el-form-item label="A标签内页">
+            <el-switch v-model="dataFormReplace.atagLink"></el-switch>
+          </el-form-item>
+
+          <el-form-item>
+            <el-button type="primary" @click="submitReplaceForm">提交</el-button>
+          </el-form-item>
+        </el-form>
+      </el-tab-pane>
+      <!-- 外互链 -->
+      <el-tab-pane label="友情链接">
+        <el-form :model="dataFormLink" ref="dataFormLink" label-width="80px">
+          <el-form-item label="友情链接">
+            <el-input
+              v-model="dataFormLink.content"
+              :autosize="{ minRows: 8, maxRows: 8 }"
+              type="textarea"
+              :disabled="true"
+              placeholder="权重站|关键词|权重站|关键词|权重站|关键词|权重站"
+              clearable
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="目前固定">
+            <code>
+              权重站|关键词|权重站|关键词|权重站|关键词|权重站
+            </code>
+          </el-form-item>
+          <el-form-item>
+            <!-- <el-button type="primary" @click="submitLinks">提交</el-button> -->
+          </el-form-item>
+        </el-form>
+      </el-tab-pane>
+
     </el-tabs>
 
     <!-- <template slot="footer">
@@ -133,7 +156,11 @@ export default {
       },
       dataFormReplace: {
         htagReplace: false,
-        htagLink: false
+        htagLink: false,
+        atagLink: false
+      },
+      dataFormCache:{
+        cacheType: 2
       },
       dataFormLink: {
         content: '',
@@ -177,7 +204,23 @@ export default {
     resetForm(formName) {
       this.$refs[formName].resetFields()
     },
-
+    async submitCacheForm(){
+      if (this.id) {
+       try {
+            this.loading = true
+            await Category.editCategory(this.id, {...this.data,...this.dataFormCache,})
+            this.$message({
+              message: '修改成功',
+              type: 'success',
+              duration: 500,
+            })
+            this.$emit('refreshDataList')
+          } catch (e) {
+            this.loading = false
+            console.log(e)
+          }
+        }
+    },
     async submitReplaceForm(){
       if (this.id) {
        try {
