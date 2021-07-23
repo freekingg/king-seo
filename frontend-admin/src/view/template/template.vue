@@ -19,7 +19,7 @@
           <template slot-scope="scope">
             <el-button type="success"  size="mini" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
             <el-button type="danger" disabled size="mini" @click="deleteHandle(scope.row.id)">删除</el-button>
-            <el-button type="warning" size="mini" @click="setConfig(scope.row.id,scope.row)">配置</el-button>
+            <!-- <el-button type="warning" size="mini" @click="setConfig(scope.row.id,scope.row)">配置</el-button> -->
           </template>
         </el-table-column>
       </el-table>

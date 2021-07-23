@@ -94,7 +94,6 @@ articleApi.get('/category/:id', loginRequired, async ctx => {
   const v = await new DomainSearchValidator().validate(ctx);
   const id = v.get('path.id');
   const items = await domainDto.getCategoryItems(id);
-  console.log('items: ', items);
   if (!items) {
     throw new NotFound({
       code: 10022

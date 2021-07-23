@@ -20,7 +20,6 @@ export default {
   },
 
   [types.ADD_UNREAD_MESSAGE](state, payload) {
-    // console.log('===:  ', payload)
     state.unreadMessages.push(payload)
   },
 
@@ -46,5 +45,9 @@ export default {
 
   [types.SET_REFERSH_OPTION](state, option) {
     state.refreshOptions = option
+  },
+
+  [types.SET_CATEGORY](state,payload) {
+    state.category = payload
   },
 }

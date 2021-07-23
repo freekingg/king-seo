@@ -5,6 +5,7 @@
 <script>
 import { mapActions } from 'vuex'
 import Vue from 'vue'
+import Category from '@/model/category'
 
 export default {
   data() {
@@ -15,6 +16,7 @@ export default {
   },
   mounted() {
     document.getElementById('loader').style.display = 'none'
+    this.init()
   },
   provide() {
     // eventBus挂载的事件： addGroup addUser
@@ -23,7 +25,12 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['loginOut']),
+    ...mapActions(['loginOut','setCategory']),
+    async init(){
+      Category.getCategorys().then((result) => {
+        this.setCategory(result.list)
+      })
+    }
   },
 }
 </script>
@@ -56,10 +63,16 @@ export default {
   .container-header{
     display: flex;
     justify-content: flex-start;
+    .el-form{
+      padding-top: 15px !important;
+    }
+    .el-form-item{
+      margin-bottom: 0;
+    }
   }
   .title {
-    height: 59px;
-    line-height: 59px;
+    min-height: 50px;
+    // line-height: 59px;
     color: $parent-title-color;
     font-size: 16px;
     font-weight: 500;

@@ -18,4 +18,6 @@ export default {
     config: null,
     treePath: [],
   },
+  // 分组信息
+  category:[],
 }

@@ -2,6 +2,7 @@ import { NotFound, Forbidden } from 'lin-mizar';
 import Sequelize from 'sequelize';
 import { Website } from '../../model/web/website';
 import { Category as categoryModals } from '../../model/web/category';
+import { set } from 'lodash';
 
 class WebsiteDao {
   async getItem (host) {
@@ -28,7 +29,9 @@ class WebsiteDao {
     const page = v.get('query.page');
     const limit = v.get('query.count');
     const host = v.get('query.host') || '';
+    const category_id = v.get('query.category_id') || '';
     const condition = {};
+    v.get('query.category_id') && set(condition, 'category_id', v.get('query.category_id'));
 
     const { rows, count } = await Website.findAndCountAll({
       where: Object.assign({}, condition, {

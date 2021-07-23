@@ -27,6 +27,8 @@ export const readedMessages = state => state.readedMessages
 
 export const unreadMessages = state => state.unreadMessages
 
+export const category = state => state.category
+
 /**
  * 在侧边栏展示时，如果当前路由 children 属性为空，则删除该路由
  * @param {*} arr 路由配置项数据

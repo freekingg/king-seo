@@ -1,27 +1,30 @@
 <template>
   <div class="container">
     <el-row class="title container-header" type="flex">
-      <el-col :span="4">以下为已缓存网站</el-col>
+      <!-- <el-col :span="4">以下为已缓存网站</el-col> -->
       <el-col :span="20">
-        <el-form :inline="true"  size="mini" :model="dataForm" @keyup.enter.native="getDataList()">
+        <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
           <el-form-item>
-            <el-input v-model="dataForm.title" placeholder="请输入域名" clearable />
+            <el-input v-model="dataForm.host" placeholder="请输入域名" clearable />
           </el-form-item>
           <el-form-item>
-            <el-input v-model="dataForm.title" placeholder="请输入域名" clearable />
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" icon="el-icon-plus" @click="addOrUpdateHandle">查询</el-button>
+           <el-select v-model="dataForm.category_id" placeholder="请选择" clearable>
+            <el-option
+              v-for="item in category"
+              :key="item.id"
+              :label="item.title"
+              :value="item.id">
+            </el-option>
+          </el-select>
           </el-form-item>
       </el-form>
       </el-col>
 
-
-      <!-- <el-col :span="8" class="text-right">
+      <el-col :span="8" class="text-right">
         <el-button-group>
-          <el-button type="primary" icon="el-icon-plus" @click="addOrUpdateHandle">添加</el-button>
+          <el-button type="primary" icon="el-icon-search" @click="getDataList">查询</el-button>
         </el-button-group>
-      </el-col> -->
+      </el-col>
     </el-row>
     <div class="wrap">
       <el-table size="mini" v-loading="dataListLoading" :data="dataList" border>
@@ -71,6 +74,8 @@ import AddOrUpdate from './website-add-or-update'
 import Config from './website-config.vue'
 import mixinViewModule from '@/common/mixin/view-module'
 
+import { mapGetters } from 'vuex'
+
 export default {
   components: {
     AddOrUpdate,
@@ -81,6 +86,9 @@ export default {
     // const tags = await Tag.getTags()
     // this.tags = tags.list
   },
+    computed: {
+    ...mapGetters(['category'])
+  },
   data() {
     return {
       mixinViewModuleOptions: {
@@ -90,7 +98,10 @@ export default {
       },
       configVisible: false,
       // 查询条件
-      dataForm: {},
+      dataForm: {
+        host:'',
+        category_id:''
+      },
       // 数据列表
       dataList: [],
       tags: [],
