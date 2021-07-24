@@ -39,8 +39,8 @@ CategoryConfig.init(
   merge(
     {
       sequelize,
-      tableName: 'category_config',
-      modelName: 'category_config'
+      tableName: 'web_category_config',
+      modelName: 'web_category_config'
     },
     InfoCrudMixin.options
   )

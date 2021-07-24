@@ -46,8 +46,8 @@ Keyword.init(
   merge(
     {
       sequelize,
-      tableName: 'keyword',
-      modelName: 'keyword'
+      tableName: 'web_keyword',
+      modelName: 'web_keyword'
     },
     InfoCrudMixin.options
   )

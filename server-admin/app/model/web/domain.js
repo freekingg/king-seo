@@ -42,8 +42,8 @@ Domain.init(
   merge(
     {
       sequelize,
-      tableName: 'domain',
-      modelName: 'domain',
+      tableName: 'web_domain',
+      modelName: 'web_domain',
       indexes: [
         {
           name: 'host_del',

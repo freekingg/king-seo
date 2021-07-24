@@ -42,8 +42,8 @@ WebTpl.init(
   merge(
     {
       sequelize,
-      tableName: 'web-tpl',
-      modelName: 'web-tpl',
+      tableName: 'web_tpl',
+      modelName: 'web_tpl',
       indexes: [
         {
           name: 'name_del',

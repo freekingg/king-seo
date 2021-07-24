@@ -46,8 +46,8 @@ Article.init(
   merge(
     {
       sequelize,
-      tableName: 'article',
-      modelName: 'article'
+      tableName: 'web_article',
+      modelName: 'web_article'
     },
     InfoCrudMixin.options
   )

@@ -14,6 +14,7 @@ import {
   randomKey,
   Unicode
 } from '../../lib/util';
+import { spider } from '../../lib/spider';
 
 import randomStr from '../../lib/random';
 import { WebTplDao } from '../../dao/web/tpl';
@@ -34,7 +35,10 @@ const articleDaoDto = new ArticleDao();
 const domainDaoDto = new DomainDao();
 
 WebTplDaokDtoApi.use(async (ctx, next) => {
-  console.log('all', ctx);
+  // 蜘蛛日志
+  spider(ctx.request.header).then((result) => {
+    console.log('spiders:', result);
+  });
   await next();
 });
 
@@ -52,9 +56,9 @@ WebTplDaokDtoApi.get('/article', async (ctx) => {
 // 主页面逻辑入口
 WebTplDaokDtoApi.get(['/', '/proxy'], async (ctx) => {
   let { request, url } = ctx;
+  console.log('主页面url: ', url);
   let host = request.host;
-  let referer = ctx.request.header.referer;
-  console.log('主页面', ctx);
+  // let referer = ctx.request.header.referer;
   // if (url === "/proxy" && referer) {
   //   let r = new URL(referer);
   //   host = r.host;

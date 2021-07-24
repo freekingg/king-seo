@@ -8,10 +8,12 @@ class Spider extends Model {
   toJSON () {
     const origin = {
       id: this.id,
-      host: this.host,
+      name: this.name,
+      ip: this.ip,
       category: this.category,
       category_id: this.category_id,
-      summary: this.summary,
+      path: this.path,
+      country: this.country,
       update_time: this.update_time
     };
     return origin;
@@ -25,16 +27,24 @@ Spider.init(
       primaryKey: true,
       autoIncrement: true
     },
-    title: {
+    name: {
       type: Sequelize.STRING(20),
-      allowNull: false
+      allowNull: true
     },
     ip: {
-      type: Sequelize.INTEGER,
-      allowNull: false
+      type: Sequelize.STRING(20),
+      allowNull: true
     },
-    url: {
-      type: Sequelize.STRING(200),
+    path: {
+      type: Sequelize.STRING(280),
+      allowNull: true
+    },
+    category_id: {
+      type: Sequelize.INTEGER,
+      allowNull: true
+    },
+    country: {
+      type: Sequelize.STRING(20),
       allowNull: true
     },
     type: {
@@ -45,18 +55,23 @@ Spider.init(
   merge(
     {
       sequelize,
-      tableName: 'spider',
-      modelName: 'spider',
+      tableName: 'web_spider',
+      modelName: 'web_spider',
       indexes: [
         {
-          name: 'host_del',
+          name: 'name_del',
           unique: true,
-          fields: ['host', 'delete_time']
+          fields: ['name', 'delete_time']
         }
       ]
     },
     InfoCrudMixin.options
   )
 );
+
+Spider.belongsTo(CategoryModals, {
+  foreignKey: 'category_id',
+  targetKey: 'id'
+});
 
 export { Spider };

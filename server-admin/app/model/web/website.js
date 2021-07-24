@@ -62,8 +62,8 @@ Website.init(
   merge(
     {
       sequelize,
-      tableName: 'website',
-      modelName: 'website',
+      tableName: 'web_website',
+      modelName: 'web_website',
       indexes: [
         {
           name: 'host_del',

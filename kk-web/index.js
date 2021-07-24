@@ -19,19 +19,43 @@ const proxy = require('koa-proxies')
 // 代理根路径
 app.use(
   proxy("*", (params) => {
-    console.log("params", params);
-    console.log("params", params['0'].split('/'));
+    // console.log("params", params);
+    // console.log("paramsArr", params["0"].split("/"));
     let paramsArr = params['0'].split('/')
     if (paramsArr[1] === 'a' && /^\d+$/.test(paramsArr[2])) {
-      console.log('neiye');
       return {
-        target: 'http://localhost:5001/',
-        rewrite: path => path.replace(/(.*)/, '/article'),
-      }
+        target: "http://localhost:5001/",
+        rewrite: (path) => path.replace(/(.*)/, "/article"),
+        events: {
+          proxyReq(proxyReq, req) {
+            let referer = req._parsedUrl.path || '';
+            proxyReq.setHeader("X-Special-Proxy-Header-path", referer);
+          },
+        },
+      };
+    }
+    if (paramsArr[1] === "static") {
+      return {
+        target: "http://localhost:5001",
+        // rewrite: (path) => path.replace(/(.*)/, "/static/static/*"),
+        events: {
+          proxyReq(proxyReq, req) {
+            let referer = req._parsedUrl.path || "";
+            proxyReq.setHeader("X-Special-Proxy-Header-path", referer);
+          },
+        },
+      };
     }
     return {
       target: "http://localhost:5001/",
       rewrite: (path) => path.replace(/(.*)/, "/proxy"),
+      events: {
+        proxyReq(proxyReq, req) {
+          let referer = req._parsedUrl.path || "";
+          proxyReq.setHeader("X-Special-Proxy-Header-path", referer);
+        },
+      },
+      // changeOrigin:true,
       logs: true,
     };
   })
