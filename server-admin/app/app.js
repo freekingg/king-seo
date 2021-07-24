@@ -5,7 +5,7 @@ import mount from 'koa-mount';
 import serve from 'koa-static';
 import { config, json, logging, success, jwt, Loader } from 'lin-mizar';
 import { PermissionModel } from './model/permission';
-// const views = require('koa-views');
+const views = require('koa-views');
 const { resolve } = require('path')
 /**
  * 首页
@@ -49,9 +49,9 @@ function applyStatic (app, prefix = '/assets') {
   app.use(mount(prefix, serve(assetsDir)));
   // app.use(serve(resolve(__dirname, '../web/template/index')))
   app.use(serve(resolve(__dirname, '../web/template/assets')));
-  // app.use(views(resolve(__dirname, './web/template'), {
-  //   extension: 'html'
-  // }))
+  app.use(views(resolve(__dirname, '../web/template/article'), {
+    extension: 'html'
+  }))
 }
 
 /**

@@ -10,7 +10,6 @@ class Category extends Model {
       title: this.title,
       summary: this.summary,
       globalJs: this.globalJs,
-      htagReplace: this.htagReplace,
       cacheType: this.cacheType,
       htagLink: this.htagLink,
       atagLink: this.atagLink,
@@ -41,20 +40,15 @@ Category.init(
       defaultValue: 2,
       comment: '分组级别 1：不缓存 2：仅蜘蛛缓存 3：全部不缓存'
     },
-    htagReplace: {
-      type: Sequelize.BOOLEAN,
-      comment: '0：关闭 1：开启',
-      defaultValue: 0
-    },
     htagLink: {
       type: Sequelize.BOOLEAN,
-      comment: '0：关闭 1：开启',
-      defaultValue: 0
+      comment: '分组级别 1：不处理 2：仅关键词 3：关键词+主域名链接 4：关键词+关键词+内容页链接',
+      defaultValue: 1
     },
     atagLink: {
       type: Sequelize.BOOLEAN,
-      comment: '0：关闭 1：开启',
-      defaultValue: 0
+      comment: '分组级别 1：不处理 2：仅关键词 3：关键词+主域名链接 4：关键词+关键词+内容页链接',
+      defaultValue: 1
     },
     summary: {
       type: Sequelize.STRING(200),

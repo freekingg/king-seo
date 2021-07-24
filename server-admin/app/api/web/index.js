@@ -33,9 +33,10 @@ const keywordDaoDto = new KeywordDao();
 const articleDaoDto = new ArticleDao();
 const domainDaoDto = new DomainDao();
 
-WebTplDaokDtoApi.get("/neiye", async (ctx) => {
-  ctx.body = 'neirong'
-})
+// 文章内页
+WebTplDaokDtoApi.get("/article", async (ctx) => {
+  await ctx.render("index");
+});
 
 // 主页面逻辑入口
 WebTplDaokDtoApi.get(["/", "/proxy"], async (ctx) => {
@@ -48,10 +49,6 @@ WebTplDaokDtoApi.get(["/", "/proxy"], async (ctx) => {
   //   host = r.host;
   // }
 
-  if (url === "localhost:5001") {
-    console.log("localhost:5001,返回");
-    return;
-  }
   console.log("当前请求的域名:", host);
 
   let assetsDir = config.getItem("assetsDir");
@@ -131,6 +128,86 @@ WebTplDaokDtoApi.get(["/", "/proxy"], async (ctx) => {
       headDom.appendChild(newDescriptionDom);
     }
 
+
+    // 模板目录
+    let tplTmppath = path.join(tempDir, tpls.name);
+    fs.writeFileSync(tplTmppath, root.toString());
+    let category_id = hostCategory ? hostCategory.category_id : "";
+    if (!hostCategory) {
+      ctx.body = "<h3>★★★ 域名未绑定,快去绑定 ★★★</h3>";
+      return;
+    }
+
+    // 全局js
+    if (hostCategory.category.globalJs) {
+      const globalJsDom = parse(hostCategory.category.globalJs);
+      bodyDom.appendChild(globalJsDom);
+    }
+
+    // h标签
+    let htagLink = hostCategory.category.htagLink;
+    if (htagLink && htagLink != 1) {
+      let h1s = root.querySelectorAll("h1");
+      let h2s = root.querySelectorAll("h2");
+      let h3s = root.querySelectorAll("h3");
+
+      if (htagLink == 2) {
+       
+        h1s.map((item) => {
+          item.set_content(Unicode(kwsArr[0]));
+        });
+        h2s.map((item) => {
+          item.set_content(Unicode(kwsArr[1]));
+        });
+        h3s.map((item) => {
+          item.set_content(Unicode(kwsArr[2]));
+        });
+      }
+
+      if (htagLink == 3) {
+        h1s.map((item) => {
+          let str = `<a href="http://${randomStr()}.${host}">${Unicode(kwsArr[0])}</a>`
+          const aLinkDom = parse(str);
+          item.set_content('');
+          item.appendChild(aLinkDom);
+        });
+        h2s.map((item) => {
+          let str = `<a href="http://${randomStr()}.${host}">${Unicode(kwsArr[1])}</a>`
+          const aLinkDom = parse(str);
+          item.set_content('');
+          item.appendChild(aLinkDom);
+        });
+        h3s.map((item) => {
+          let str = `<a href="http://${randomStr()}.${host}">${Unicode(kwsArr[2])}</a>`
+          const aLinkDom = parse(str);
+          item.set_content('');
+          item.appendChild(aLinkDom);
+        });
+      }
+
+      if (htagLink == 4) {
+        h1s.map((item) => {
+          let str = `<a href="http://${randomStr()}.${host}/a/b.html">${Unicode(kwsArr[0])}</a>`
+          const aLinkDom = parse(str);
+          item.set_content('');
+          item.appendChild(aLinkDom);
+        });
+        h2s.map((item) => {
+          let str = `<a href="http://${randomStr()}.${host}/a/b.html">${Unicode(kwsArr[1])}</a>`
+          const aLinkDom = parse(str);
+          item.set_content('');
+          item.appendChild(aLinkDom);
+        });
+        h3s.map((item) => {
+          let str = `<a href="http://${randomStr()}.${host}/a/b.html">${Unicode(kwsArr[2])}</a>`
+          const aLinkDom = parse(str);
+          item.set_content('');
+          item.appendChild(aLinkDom);
+        });
+      }
+    }
+
+
     // 插入友情链接
     let friendLinkStr = `
     <ul style="display:flex;list-style:none;justify-content:center;position: relative;z-index:888">
@@ -152,40 +229,6 @@ WebTplDaokDtoApi.get(["/", "/proxy"], async (ctx) => {
     const friendLinkDom = parse(friendLinkStr);
     bodyDom.appendChild(friendLinkDom);
 
-    // 模板目录
-    let tplTmppath = path.join(tempDir, tpls.name);
-    fs.writeFileSync(tplTmppath, root.toString());
-    let category_id = hostCategory ? hostCategory.category_id : "";
-    if (!hostCategory) {
-      ctx.body = "<h3>★★★ 域名未绑定,快去绑定 ★★★</h3>";
-      return;
-    }
-
-    // 全局js
-    if (hostCategory.category.globalJs) {
-      const globalJsDom = parse(hostCategory.category.globalJs);
-      bodyDom.appendChild(globalJsDom);
-    }
-
-    // h标签
-    if (hostCategory.category.htagReplace) {
-      let h1s = root.querySelectorAll("h1");
-      let h2s = root.querySelectorAll("h2");
-      let h3s = root.querySelectorAll("h3");
-      h1s.map((item) => {
-        item.set_content(Unicode(kwsArr[0]));
-      });
-      h2s.map((item) => {
-        item.set_content(Unicode(kwsArr[1]));
-      });
-      h3s.map((item) => {
-        item.set_content(Unicode(kwsArr[2]));
-      });
-
-      // const globalJsDom = parse(hostCategory.category.globalJs);
-      // bodyDom.appendChild(globalJsDom);
-    }
-
     let obj = {
       host,
       title: `${kws}`,
@@ -202,8 +245,6 @@ WebTplDaokDtoApi.get(["/", "/proxy"], async (ctx) => {
   console.log("直接读取", site.path);
   ctx.body = d.toString();
 });
-
-
 
 // 根据模板目录同步数据库
 WebTplDaokDtoApi.post("/sync", async (ctx) => {

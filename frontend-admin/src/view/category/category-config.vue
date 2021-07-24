@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :visible.sync="visible" title="配置" :close-on-click-modal="false" :close-on-press-escape="false">
+  <el-dialog width="800px" :visible.sync="visible" title="配置" :close-on-click-modal="false" :close-on-press-escape="false">
     <el-tabs type="border-card">
       <!-- 域名管理 -->
       <el-tab-pane label="域名管理">
@@ -18,8 +18,6 @@
           </el-form-item>
         </el-form>
       </el-tab-pane>
-
-
       <el-tab-pane label="缓存设置">
         <el-form :model="dataFormCache" :rules="dataRule" ref="dataFormCache" label-width="100px">
           <el-form-item label="页面缓存">
@@ -62,13 +60,20 @@
       <el-tab-pane label="替换管理">
         <el-form :model="dataFormReplace" :rules="dataRule" ref="dataFormReplace" label-width="100px">
           <el-form-item label="H标签替换">
-            <el-switch v-model="dataFormReplace.htagReplace"></el-switch>
+            <el-radio-group v-model="dataFormReplace.htagLink">
+              <el-radio :label="1">不处理</el-radio>
+              <el-radio :label="2">仅关键词</el-radio>
+              <el-radio :label="3">关键词+主域名链接</el-radio>
+              <el-radio :label="4">关键词+内容页链接</el-radio>
+            </el-radio-group>
           </el-form-item>
-          <el-form-item label="H标签链接">
-            <el-switch v-model="dataFormReplace.htagLink"></el-switch>
-          </el-form-item>
-          <el-form-item label="A标签内页">
-            <el-switch v-model="dataFormReplace.atagLink"></el-switch>
+          <el-form-item label="A标签替换">
+            <el-radio-group v-model="dataFormReplace.atagLink">
+              <el-radio :label="1">不处理</el-radio>
+              <el-radio :label="2">仅关键词</el-radio>
+              <el-radio :label="3">关键词+主域名链接</el-radio>
+              <el-radio :label="4">关键词+内容页链接</el-radio>
+            </el-radio-group>
           </el-form-item>
 
           <el-form-item>
@@ -155,9 +160,8 @@ export default {
         url: '',
       },
       dataFormReplace: {
-        htagReplace: false,
-        htagLink: false,
-        atagLink: false
+        htagLink: 1,
+        atagLink: 1
       },
       dataFormCache:{
         cacheType: 2
