@@ -200,8 +200,8 @@ export default {
           })
           this.dataFormDomain.url = urls
           this.globalForm.globalJs = this.data.globalJs;
-          this.dataFormReplace.htagReplace = this.data.htagReplace;
           this.dataFormReplace.htagLink = this.data.htagLink;
+          this.dataFormReplace.atagLink = this.data.atagLink;
         }
       })
     },

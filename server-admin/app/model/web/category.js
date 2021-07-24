@@ -41,12 +41,12 @@ Category.init(
       comment: '分组级别 1：不缓存 2：仅蜘蛛缓存 3：全部不缓存'
     },
     htagLink: {
-      type: Sequelize.BOOLEAN,
+      type: Sequelize.INTEGER(2),
       comment: '分组级别 1：不处理 2：仅关键词 3：关键词+主域名链接 4：关键词+关键词+内容页链接',
       defaultValue: 1
     },
     atagLink: {
-      type: Sequelize.BOOLEAN,
+      type: Sequelize.INTEGER(2),
       comment: '分组级别 1：不处理 2：仅关键词 3：关键词+主域名链接 4：关键词+关键词+内容页链接',
       defaultValue: 1
     },

@@ -72,7 +72,7 @@ export default {
   }
   .title {
     min-height: 50px;
-    // line-height: 59px;
+    line-height: 59px;
     color: $parent-title-color;
     font-size: 16px;
     font-weight: 500;

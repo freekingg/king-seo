@@ -6,7 +6,7 @@ import serve from 'koa-static';
 import { config, json, logging, success, jwt, Loader } from 'lin-mizar';
 import { PermissionModel } from './model/permission';
 const views = require('koa-views');
-const { resolve } = require('path')
+const { resolve } = require('path');
 /**
  * 首页
  */
@@ -44,14 +44,14 @@ function applyBodyParse (app) {
  * @param prefix 静态资源存放相对路径
  */
 function applyStatic (app, prefix = '/assets') {
-  config.setItem('assetsDir', resolve(__dirname, './assets'))
+  config.setItem('assetsDir', resolve(__dirname, './assets'));
   const assetsDir = config.getItem('file.storeDir', 'app/static');
   app.use(mount(prefix, serve(assetsDir)));
   // app.use(serve(resolve(__dirname, '../web/template/index')))
   app.use(serve(resolve(__dirname, '../web/template/assets')));
   app.use(views(resolve(__dirname, '../web/template/article'), {
-    extension: 'html'
-  }))
+    map: { html: 'ejs' }
+  }));
 }
 
 /**
