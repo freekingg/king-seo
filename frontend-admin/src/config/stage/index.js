@@ -3,6 +3,7 @@ import adminConfig from './admin'
 import categoryConfig from './category'
 import templateConfig from './template'
 import websiteConfig from './website'
+import spiderConfig from './spider'
 import contentConfig from './content'
 import pluginsConfig from './plugin'
 import Utils from '@/lin/util/util'
@@ -52,6 +53,7 @@ let homeRouter = [
   categoryConfig,
   contentConfig,
   templateConfig,
+  spiderConfig,
   // bookConfig,
   adminConfig,
 ]

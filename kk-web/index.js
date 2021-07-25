@@ -3,11 +3,11 @@ const app = new Koa()
 const proxy = require('koa-proxies')
 
 // 代理静态资源
-// app.use(proxy('/static/*', {
-//   target: 'http://localhost:5001/',    
-//   rewrite: path => path.replace(/^\/static(\/|\/\w+)?$/, '/static'),
-//   // logs: true
-// }))
+app.use(proxy('/static/*', {
+  target: 'http://localhost:5001/',    
+  rewrite: path => path.replace(/^\/static(\/|\/\w+)?$/, '/static'),
+  // logs: true
+}))
 
 // 代理根路径
 // app.use(proxy('/a/*/*.html', {
@@ -20,7 +20,7 @@ const proxy = require('koa-proxies')
 app.use(
   proxy("*", (params) => {
     // console.log("params", params);
-    // console.log("paramsArr", params["0"].split("/"));
+    console.log("paramsArr", params["0"].split("/"));
     let paramsArr = params['0'].split('/')
     if (paramsArr[1] === 'a' && /^\d+$/.test(paramsArr[2])) {
       return {
@@ -28,18 +28,23 @@ app.use(
         rewrite: (path) => path.replace(/(.*)/, "/article"),
         events: {
           proxyReq(proxyReq, req) {
+             console.log("article");
             let referer = req._parsedUrl.path || '';
             proxyReq.setHeader("X-Special-Proxy-Header-path", referer);
           },
         },
       };
     }
-    if (paramsArr[1] === "static") {
+
+    if (paramsArr[1] === "static" || paramsArr[2] === "static") {
+      console.log("paramsArr[2]", paramsArr[2]);
       return {
         target: "http://localhost:5001",
-        // rewrite: (path) => path.replace(/(.*)/, "/static/static/*"),
+        rewrite: (path) => path.replace(/^\/static(\/|\/\w+)?$/, "/static"),
+        // rewrite: (path) => path.replace(/(.*)/, "/static"),
         events: {
           proxyReq(proxyReq, req) {
+            console.log("static", req._parsedUrl.path);
             let referer = req._parsedUrl.path || "";
             proxyReq.setHeader("X-Special-Proxy-Header-path", referer);
           },
@@ -60,6 +65,14 @@ app.use(
     };
   })
 );
+
+// app.use(
+//   proxy("/static/*", {
+//     target: "http://localhost:5001/",
+//     rewrite: (path) => path.replace(/^\/static(\/|\/\w+)?$/, "/static"),
+//     // logs: true
+//   })
+// );
 
 // app.use(proxy('/', {
 //   target: 'http://localhost:5001/',    

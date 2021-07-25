@@ -31,7 +31,8 @@ SpiderApi.get('/:id', loginRequired, async ctx => {
 });
 
 SpiderApi.get('/', loginRequired, async ctx => {
-  const items = await spiderDto.getItems();
+  const v = await new SpiderSearchValidator().validate(ctx);
+  const items = await spiderDto.getItems(v);
   ctx.json(items);
 });
 

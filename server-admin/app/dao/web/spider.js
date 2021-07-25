@@ -3,7 +3,7 @@ import Sequelize from 'sequelize';
 
 import { Spider as Modals } from '../../model/web/spider';
 import { Category as categoryModals } from '../../model/web/category';
-
+import { set } from 'lodash';
 class SpiderDao {
   async getItem (id) {
     const item = await Modals.findOne({
@@ -13,7 +13,7 @@ class SpiderDao {
       include: [
         {
           model: categoryModals,
-          as: 'category'
+          as: 'web_category'
         }
       ]
     });
@@ -39,14 +39,29 @@ class SpiderDao {
     return item;
   }
 
-  async getItems () {
+  async getItems (v) {
+    const page = v.get('query.page');
+    const limit = v.get('query.count');
+    const host = v.get('query.host') || '';
+    const condition = {};
+    v.get('query.category_id') &&
+      set(condition, 'category_id', v.get('query.category_id'));
+    console.log('condition', condition);
     const { rows, count } = await Modals.findAndCountAll({
+      where: Object.assign({}, condition, {
+        host: {
+          [Sequelize.Op.like]: `%${host}%`
+        }
+      }),
       include: [
         {
           model: categoryModals,
-          as: 'category'
+          as: 'web_category'
         }
-      ]
+      ],
+      order: [['create_time', 'DESC']],
+      offset: page * limit,
+      limit: limit
     });
     return {
       list: rows,
@@ -54,14 +69,16 @@ class SpiderDao {
     };
   }
 
-  async createItem (v) {
+  async createItem (body) {
     const built = new Modals();
-    built.name = v.get('body.name');
-    built.ip = v.get('body.ip');
-    built.path = v.get('body.path');
-    built.category_id = v.get('body.category_id');
-    built.country = v.get('body.country');
-    built.type = v.get('body.type');
+    built.name = body.name;
+    built.ip = body.ip;
+    built.path = body.path;
+    built.host = body.host;
+    built.category_id = body.category_id;
+    built.category_title = body.category_title;
+    built.country = body.country;
+    built.type = body.type;
     await built.save();
   }
 

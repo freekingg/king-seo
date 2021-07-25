@@ -9,7 +9,7 @@ class Domain extends Model {
     const origin = {
       id: this.id,
       host: this.host,
-      category: this.category,
+      category: this.web_category,
       category_id: this.category_id,
       summary: this.summary,
       update_time: this.update_time

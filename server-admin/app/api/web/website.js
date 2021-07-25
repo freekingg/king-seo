@@ -11,7 +11,7 @@ import { ItemNotFound } from '../../lib/exception';
 import { WebsiteDao } from '../../dao/web/website';
 
 const websiteApi = new LinRouter({
-  prefix: '/v1/website',
+  prefix: '/web/website',
   module: '网站'
 });
 

@@ -5,7 +5,7 @@ import { Keyword as Modals } from '../../model/web/keyword';
 import { Category as categoryModals } from '../../model/web/category';
 
 class KeywordDao {
-  async getItem(id) {
+  async getItem (id) {
     const item = await Modals.findOne({
       where: {
         id
@@ -13,7 +13,7 @@ class KeywordDao {
       include: [
         {
           model: categoryModals,
-          as: 'category'
+          as: 'web_category'
         }
       ]
     });
@@ -28,7 +28,7 @@ class KeywordDao {
     return item;
   }
 
-  async getItemByKeyword(q) {
+  async getItemByKeyword (q) {
     const item = await Modals.findOne({
       where: {
         title: {
@@ -39,12 +39,12 @@ class KeywordDao {
     return item;
   }
 
-  async getItems() {
+  async getItems () {
     const { rows, count } = await Modals.findAndCountAll({
       include: [
         {
           model: categoryModals,
-          as: 'category'
+          as: 'web_category'
         }
       ]
     });
@@ -54,7 +54,7 @@ class KeywordDao {
     };
   }
 
-  async createItem(v) {
+  async createItem (v) {
     const item = await Modals.findOne({
       where: {
         title: v.get('body.title')
@@ -75,7 +75,7 @@ class KeywordDao {
     await built.save();
   }
 
-  async updateItem(v, id) {
+  async updateItem (v, id) {
     const item = await Modals.findByPk(id);
     if (!item) {
       throw new NotFound({
@@ -90,7 +90,7 @@ class KeywordDao {
     await item.save();
   }
 
-  async deleteItem(id) {
+  async deleteItem (id) {
     const item = await Modals.findOne({
       where: {
         id

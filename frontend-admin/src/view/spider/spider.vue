@@ -28,22 +28,17 @@
     </el-row>
     <div class="wrap">
       <el-table size="mini" v-loading="dataListLoading" :data="dataList" border>
+        <el-table-column prop="ip" label="IP" header-align="center" align="center" />
+        <el-table-column prop="country" label="地区" header-align="center" align="center" />
         <el-table-column prop="host" label="域名" header-align="center" align="center" width="150">
           <template slot-scope="scope">
             <el-link :href="'http://' + scope.row.host" target="_blank" type="primary">{{ scope.row.host }}</el-link>
           </template>
         </el-table-column>
-        <el-table-column prop="title" label="标题" header-align="center" align="center" />
-        <el-table-column prop="keywords" label="关键字" header-align="center" align="center" />
-        <el-table-column prop="template" label="模板" header-align="center" align="center" />
-        <el-table-column prop="category.title" label="分组" header-align="center" align="center" />
+        <el-table-column prop="path" label="路径" header-align="center" align="center" />
+        <el-table-column prop="category_title" label="分组" header-align="center" align="center" />
+        <el-table-column prop="type" label="类型" header-align="center" align="center" />
         <el-table-column prop="update_time" label="创建时间" header-align="center" align="center" />
-        <el-table-column label="操作" fixed="right" header-align="center" align="center" width="100">
-          <template slot-scope="scope">
-            <el-button type="danger" size="mini" @click="deleteHandle(scope.row.id)">清除</el-button>
-            <!-- <el-button type="warning" size="mini" @click="setConfig(scope.row.id)">配置</el-button> -->
-          </template>
-        </el-table-column>
       </el-table>
     </div>
 
@@ -69,9 +64,9 @@
 </template>
 
 <script>
-import Website from '@/model/website'
-import AddOrUpdate from './website-add-or-update'
-import Config from './website-config.vue'
+import  Spider from '@/model/spider'
+import AddOrUpdate from './spider-add-or-update'
+import Config from './spider-config.vue'
 import mixinViewModule from '@/common/mixin/view-module'
 
 import { mapGetters } from 'vuex'
@@ -93,8 +88,8 @@ export default {
     return {
       mixinViewModuleOptions: {
         getDataListIsPage: true,
-        getDataListModel: Website.getItems,
-        deleteDataModel: Website.delectItem,
+        getDataListModel: Spider.getItems,
+        deleteDataModel: Spider.delectItem,
       },
       configVisible: false,
       // 查询条件

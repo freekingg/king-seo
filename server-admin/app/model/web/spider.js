@@ -10,9 +10,12 @@ class Spider extends Model {
       id: this.id,
       name: this.name,
       ip: this.ip,
-      category: this.category,
+      category: this.web_category,
       category_id: this.category_id,
+      category_title: this.category_title,
       path: this.path,
+      type: this.type,
+      host: this.host,
       country: this.country,
       update_time: this.update_time
     };
@@ -39,8 +42,16 @@ Spider.init(
       type: Sequelize.STRING(280),
       allowNull: true
     },
+    host: {
+      type: Sequelize.STRING(100),
+      allowNull: true
+    },
     category_id: {
       type: Sequelize.INTEGER,
+      allowNull: true
+    },
+    category_title: {
+      type: Sequelize.STRING(20),
       allowNull: true
     },
     country: {

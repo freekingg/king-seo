@@ -3,7 +3,7 @@ import Sequelize from 'sequelize';
 import { Category as Modals } from '../../model/web/category';
 
 class CategoryDao {
-  async getItem(id) {
+  async getItem (id) {
     const item = await Modals.findOne({
       where: {
         id
@@ -12,7 +12,7 @@ class CategoryDao {
     return item;
   }
 
-  async getItemByKeyword(q) {
+  async getItemByKeyword (q) {
     const item = await Modals.findOne({
       where: {
         title: {
@@ -23,7 +23,7 @@ class CategoryDao {
     return item;
   }
 
-  async getItems() {
+  async getItems () {
     const { rows, count } = await Modals.findAndCountAll();
     return {
       list: rows,
@@ -31,7 +31,7 @@ class CategoryDao {
     };
   }
 
-  async createItem(v) {
+  async createItem (v) {
     const item = await Modals.findOne({
       where: {
         title: v.get('body.title')
@@ -49,7 +49,7 @@ class CategoryDao {
     await built.save();
   }
 
-  async updateItem(v, id) {
+  async updateItem (v, id) {
     const item = await Modals.findByPk(id);
     if (!item) {
       throw new NotFound({
@@ -65,7 +65,7 @@ class CategoryDao {
     await item.save();
   }
 
-  async deleteItem(id) {
+  async deleteItem (id) {
     const item = await Modals.findOne({
       where: {
         id

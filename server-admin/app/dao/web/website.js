@@ -29,7 +29,6 @@ class WebsiteDao {
     const page = v.get('query.page');
     const limit = v.get('query.count');
     const host = v.get('query.host') || '';
-    const category_id = v.get('query.category_id') || '';
     const condition = {};
     v.get('query.category_id') && set(condition, 'category_id', v.get('query.category_id'));
 
@@ -42,7 +41,7 @@ class WebsiteDao {
       include: [
         {
           model: categoryModals,
-          as: 'category'
+          as: 'web_category'
         }
       ],
       order: [['create_time', 'DESC']],

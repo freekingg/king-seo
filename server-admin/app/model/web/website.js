@@ -13,7 +13,7 @@ class Website extends Model {
       description: this.description,
       keywords: this.keywords,
       template: this.template,
-      category: this.category,
+      category: this.web_category,
       category_id: this.category_id,
       path: this.path,
       update_time: this.update_time

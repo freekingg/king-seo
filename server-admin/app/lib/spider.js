@@ -1,9 +1,22 @@
 import axios from 'axios';
+
+let isIp = (str) => {
+  let regIp = /^(\d+)\.(\d+)\.(\d+)\.(\d+)$/;
+  let regIpPort = /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\:([0-9]|[1-9]\d{1,3}|[1-5]\d{4}|6[0-5]{2}[0-3][0-5])$/;
+  if (regIp.test(str) || regIpPort.test(str)) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
 let spider = async (header) => {
+  if (isIp(header.host)) return false;
   let str = header ? header['user-agent'] : '';
   let type = 'pc端';
   let ip = header ? header['x-real-ip'] : '';
   let path = header ? header['x-special-proxy-header-path'] : '';
+  let host = header.host;
   let country = '';
   let location = await axios.get(`http://ip-api.com/json/${ip}`);
   if (location.data.status === 'success') {
@@ -28,7 +41,8 @@ let spider = async (header) => {
       type,
       ip,
       path,
-      country
+      country,
+      host
     };
   }
   if (str.indexOf('Baiduspider-render') > 0) {
@@ -37,7 +51,8 @@ let spider = async (header) => {
       type,
       ip,
       path,
-      country
+      country,
+      host
     };
   }
   if (str.indexOf('Baiduspider-image') > 0) {
@@ -46,7 +61,8 @@ let spider = async (header) => {
       type,
       ip,
       path,
-      country
+      country,
+      host
     };
   }
   if (str.indexOf('baiduspider') > 0) {
@@ -55,7 +71,8 @@ let spider = async (header) => {
       type,
       ip,
       path,
-      country
+      country,
+      host
     };
   }
   if (str.indexOf('baidu') > 0) {
@@ -64,7 +81,8 @@ let spider = async (header) => {
       type,
       ip,
       path,
-      country
+      country,
+      host
     };
   }
   if (str.indexOf('sogou spider') > 0) {
@@ -73,7 +91,8 @@ let spider = async (header) => {
       type,
       ip,
       path,
-      country
+      country,
+      host
     };
   }
   if (str.indexOf('SogouSpider') > 0) {
@@ -82,7 +101,8 @@ let spider = async (header) => {
       type,
       ip,
       path,
-      country
+      country,
+      host
     };
   }
   if (str.indexOf('sogou web') > 0) {
@@ -91,7 +111,8 @@ let spider = async (header) => {
       type,
       ip,
       path,
-      country
+      country,
+      host
     };
   }
   if (str.indexOf('sosospider') > 0) {
@@ -100,7 +121,8 @@ let spider = async (header) => {
       type,
       ip,
       path,
-      country
+      country,
+      host
     };
   }
   if (str.indexOf('360spider') > 0) {
@@ -109,7 +131,8 @@ let spider = async (header) => {
       type,
       ip,
       path,
-      country
+      country,
+      host
     };
   }
   if (str.indexOf('360Spider') > 0) {
@@ -118,7 +141,8 @@ let spider = async (header) => {
       type,
       ip,
       path,
-      country
+      country,
+      host
     };
   }
   if (str.indexOf('YisouSpider') > 0) {
@@ -127,7 +151,8 @@ let spider = async (header) => {
       type,
       ip,
       path,
-      country
+      country,
+      host
     };
   }
   if (str.indexOf('bingbot') > 0) {
@@ -136,7 +161,8 @@ let spider = async (header) => {
       type,
       ip,
       path,
-      country
+      country,
+      host
     };
   }
   if (str.indexOf('BingPreview') > 0) {
@@ -145,7 +171,8 @@ let spider = async (header) => {
       type,
       ip,
       path,
-      country
+      country,
+      host
     };
   }
   if (str.indexOf('yahoo') > 0) {
@@ -154,7 +181,8 @@ let spider = async (header) => {
       type,
       ip,
       path,
-      country
+      country,
+      host
     };
   }
   if (str.indexOf('sohu') > 0) {
@@ -163,7 +191,8 @@ let spider = async (header) => {
       type,
       ip,
       path,
-      country
+      country,
+      host
     };
   }
   if (str.indexOf('slurp') > 0) {
@@ -172,7 +201,8 @@ let spider = async (header) => {
       type,
       ip,
       path,
-      country
+      country,
+      host
     };
   }
   if (str.indexOf('bot') > 0) {
@@ -181,7 +211,8 @@ let spider = async (header) => {
       type,
       ip,
       path,
-      country
+      country,
+      host
     };
   }
   return false;

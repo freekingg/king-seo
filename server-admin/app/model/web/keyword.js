@@ -9,7 +9,7 @@ class Keyword extends Model {
     const origin = {
       id: this.id,
       title: this.title,
-      category: this.category,
+      category: this.web_category,
       path: this.path,
       category_id: this.category_id,
       summary: this.summary,

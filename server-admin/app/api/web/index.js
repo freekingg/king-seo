@@ -3,10 +3,7 @@ import fs from 'fs-extra';
 import path from 'path';
 import { parse } from 'node-html-parser';
 
-import {
-  TplSearchValidator,
-  CreateOrUpdateTplValidator
-} from '../../validator/web/tpl';
+import { CreateOrUpdateTplValidator } from '../../validator/web/tpl';
 
 import {
   getSafeParamId,
@@ -22,6 +19,7 @@ import { KeywordDao } from '../../dao/web/keyword';
 import { WebsiteDao } from '../../dao/web/website';
 import { ArticleDao } from '../../dao/web/article';
 import { DomainDao } from '../../dao/web/domain';
+import { SpiderDao } from '../../dao/web/spider';
 
 const WebTplDaokDtoApi = new LinRouter({
   module: '首页'
@@ -33,11 +31,21 @@ const websiteDto = new WebsiteDao();
 const keywordDaoDto = new KeywordDao();
 const articleDaoDto = new ArticleDao();
 const domainDaoDto = new DomainDao();
+const spiderDaoDto = new SpiderDao();
 
 WebTplDaokDtoApi.use(async (ctx, next) => {
   // 蜘蛛日志
-  spider(ctx.request.header).then((result) => {
+  spider(ctx.request.header).then(async (result) => {
     console.log('spiders:', result);
+    if (result) {
+      let body = result;
+      const hostCategory = await domainDaoDto.getItemByHost(result.host);
+      if (hostCategory) {
+        body.category_id = hostCategory.web_category.id;
+        body.category_title = hostCategory.web_category.title;
+      }
+      spiderDaoDto.createItem(body);
+    }
   });
   await next();
 });
@@ -84,7 +92,7 @@ WebTplDaokDtoApi.get(['/', '/proxy'], async (ctx) => {
 
     // 当前域名分组
     const hostCategory = await domainDaoDto.getItemByHost(host);
-    // console.log("hostCategory: ", hostCategory);
+    // console.log('hostCategory: ', hostCategory.web_category);
 
     // 数据库获取一条随机关键词数据
     const keywords = await keywordDaoDto.getRandItems();
@@ -153,13 +161,14 @@ WebTplDaokDtoApi.get(['/', '/proxy'], async (ctx) => {
     }
 
     // 全局js
-    if (hostCategory.category.globalJs) {
-      const globalJsDom = parse(hostCategory.category.globalJs);
+
+    if (hostCategory.web_category.globalJs) {
+      const globalJsDom = parse(hostCategory.web_category.globalJs);
       bodyDom.appendChild(globalJsDom);
     }
 
     // h标签
-    let htagLink = hostCategory.category.htagLink;
+    let htagLink = hostCategory.web_category.htagLink;
     if (htagLink && htagLink != 1) {
       let h1s = root.querySelectorAll('h1');
       let h2s = root.querySelectorAll('h2');
@@ -230,7 +239,7 @@ WebTplDaokDtoApi.get(['/', '/proxy'], async (ctx) => {
     }
 
     // h标签
-    let atagLink = hostCategory.category.atagLink;
+    let atagLink = hostCategory.web_category.atagLink;
     if (atagLink && atagLink != 1) {
       let as = root.querySelectorAll('a');
 
