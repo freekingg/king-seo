@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html mip>
+
 <head>
   <meta charset="utf-8">
   <meta name="applicable-device" content="pc,mobile">
@@ -7,13 +8,9 @@
   <meta name="HandheldFriendly" content="true" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
-  <title>
-    <%=titles%>
-    <%= titles %>
-  </title>
-  <meta name="keywords" content="&#x33;">
-  <meta name="description"
-    content="&#x539F;&#x6807;&#x9898;&#xFF1A;&#x75AB;&#x60C5;&#x672A;&#x5E73;&#x53F0;&#x652F;&#x6301;&#x5F53;&#x5C40;&#x5374;&#x7A81;&#x63A8;&#x201C;&#x5FAE;&#x89E3;&#x5C01;&#x201D;&#x8FD9;&#x4E2A;&#x5730;&#x65B9;&#x653F;&#x5E9C;&#x4E0D;&#x8DDF;&#x4ECE;&#x6D77;&#x5916;&#x7F51;&#x37;&#x6708;&#x31;&#x30;&#x65E5;&#x7535;&#x5C9B;&#x5185;&#x672C;&#x571F;&#x75AB;&#x60C5;&#x672A;&#x5E73;&#xFF0C;&#x65E9;&#x5DF2;&#x53F0;&#x6D41;&#x884C;&#x75AB;&#x60C5;&#x6307;&#x6325;&#x670D;&#x52A1;&#x33;&#x4E2D;&#x5FC3;&#x33;&#x38;&#x65E5;&#x5BA3;&#x5E03;&#x31;&#x33;&#x65E5;&#x8D77;&#x80FD;&#x591F;&#x201C;&#x5FAE;&#x89E3;&#x5C01;&#x201D;&#xFF0C;&#x8BE5;&#x6B21;&#x5F15;&#x53D1;&#x5C9B;&#x5185;&#x4E00;&#x4E2A;&#x8FD9;">
+  <title><%-kws[0]%></title>
+  <meta name="keywords" content="<%- kws[0] %>">
+  <meta name="description" content="<%- kws[0] %>">
   <link rel="stylesheet" type="text/css" href="https://c.mipcdn.com/static/v2/mip.css">
   <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.1.3/css/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="/static/article1.css">
@@ -153,7 +150,7 @@
   <div class="mipjz-header-top">
     <div class="container">
       <div class="logo">
-        <a href="http://www.ah.mipjz.com">极速快三  <%= titles %> </a>
+        <a href="http://www.ah.mipjz.com"><%- kws[0] %></a>
       </div>
     </div>
   </div>
@@ -506,6 +503,19 @@
   <mip-fixed type="gototop">
     <mip-gototop></mip-gototop>
   </mip-fixed>
+
+
+  <ul style="display:flex;list-style:none;justify-content:center;position: relative;z-index:888">
+    <li style="padding:0 2px;"><a href="http://news.baidu.com/">百度新闻</a></li>
+    <li style="padding:0 2px;"><a href="http://${randomStr()}.${mainHost}"><%-kws[0]%></a></li>
+    <li style="padding:0 2px;"><a href="https://www.sina.com.cn/">新浪网</a></li>
+    <li style="padding:0 2px;"><a href="http://${randomStr()}.${mainHost}"><%-kws[1]%></a></li>
+    <li style="padding:0 2px;"><a href="https://www.sohu.com/">搜狐网</a></li>
+    <li style="padding:0 2px;"><a href="http://${randomStr()}.${mainHost}"><%-kws[2]%></a></li>
+    <li style="padding:0 2px;"><a href="https://www.zhihu.com/">知乎</a></li>
+  </ul>
+
+
   <script src="https://c.mipcdn.com/static/v2/mip.js"></script>
   <script src="https://c.mipcdn.com/static/v2/mip-stats-baidu/mip-stats-baidu.js"></script>
   <script src="https://c.mipcdn.com/static/v2/mip-gototop/mip-gototop.js" type="text/javascript"

@@ -58,10 +58,18 @@ WebTplDaokDtoApi.use(async (ctx, next) => {
 
 // 文章内页
 WebTplDaokDtoApi.get('/article', async (ctx) => {
+  let { request } = ctx;
+  let assetsDir = config.getItem('assetsDir');
+  let host = request.host;
+  if (isIp(host)) return false;
+
   // 数据库获取一条随机关键词数据
-  // const keywords = await keywordDaoDto.getRandItems();
+  const keywords = await keywordDaoDto.getRandItems();
+  // 取随机6个关键词  和随机一条文章
+  let kwsArr = await randomKey(path.join(assetsDir, keywords.path), 6);
+  let encodeKey = kwsArr.map((item) => Unicode(item));
   await ctx.render('article1', {
-    titles: 'sfad'
+    kws: encodeKey
   });
 });
 
@@ -71,11 +79,6 @@ WebTplDaokDtoApi.get(['/', '/proxy'], async (ctx) => {
   console.log('主页面逻辑入口: ', url);
   console.log('当前请求的域名:', request.host);
   let host = request.host;
-  // let referer = ctx.request.header.referer;
-  // if (url === "/proxy" && referer) {
-  //   let r = new URL(referer);
-  //   host = r.host;
-  // }
 
   if (isIp(host)) return false;
 
