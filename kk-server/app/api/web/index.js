@@ -76,7 +76,7 @@ WebTplDaokDtoApi.get('/article', async (ctx) => {
 // 主页面逻辑入口
 WebTplDaokDtoApi.get(['/', '/proxy'], async (ctx) => {
   let { request, url } = ctx;
-  console.log('主页面逻辑入口: ', url);
+  // console.log('主页面逻辑入口: ', url);
   console.log('当前请求的域名:', request.host);
   let host = request.host;
 
@@ -275,6 +275,16 @@ WebTplDaokDtoApi.get(['/', '/proxy'], async (ctx) => {
               3,
               'numeric'
             )}.html`
+          );
+        });
+      }
+
+      // 内页
+      if (atagLink == 5) {
+        as.map((item) => {
+          item.setAttribute(
+            'href',
+            `http://${host}/${randomStr()})}`
           );
         });
       }

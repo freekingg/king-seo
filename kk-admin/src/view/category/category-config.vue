@@ -1,5 +1,5 @@
 <template>
-  <el-dialog width="800px" :visible.sync="visible" title="配置" :close-on-click-modal="false" :close-on-press-escape="false">
+  <el-dialog width="900px" :visible.sync="visible" title="配置" :close-on-click-modal="false" :close-on-press-escape="false">
     <el-tabs type="border-card">
       <!-- 域名管理 -->
       <el-tab-pane label="域名管理">
@@ -36,9 +36,15 @@
           </el-form-item>
         </el-form>
       </el-tab-pane>
-      <el-tab-pane label="全局代码">
-        <el-form :model="globalForm" :rules="dataRule" ref="globalForm" label-width="80px">
-          <el-form-item label="代码" prop="globalJs">
+      <el-tab-pane label="全局设置">
+        <el-form :model="globalForm" :rules="dataRule" ref="globalForm" label-width="90px">
+         <!-- <el-form-item label="内页模式">
+            <el-radio-group v-model="globalForm.htagLink">
+              <el-radio :label="1">不开启</el-radio>
+              <el-radio :label="2">开启</el-radio>
+            </el-radio-group>
+          </el-form-item> -->
+          <el-form-item label="全局代码" prop="globalJs">
             <el-input
               v-model="globalForm.globalJs"
               :autosize="{ minRows: 15, maxRows: 15 }"
@@ -73,6 +79,7 @@
               <el-radio :label="2">仅关键词</el-radio>
               <el-radio :label="3">关键词+主域名链接</el-radio>
               <el-radio :label="4">关键词+内容页链接</el-radio>
+              <el-radio :label="5">泛目录</el-radio>
             </el-radio-group>
           </el-form-item>
 
