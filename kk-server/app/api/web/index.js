@@ -292,7 +292,7 @@ WebTplDaokDtoApi.get(['/', '/proxy'], async (ctx) => {
 
     // 插入友情链接
     let friendLinkStr = `
-    <ul style="display:flex;list-style:none;justify-content:center;position: relative;z-index:888">
+    <ul style="display:flex;height:80px;align-items:center;list-style:none;justify-content:center;position: relative;z-index:888">
       <li style="padding:0 2px;"><a href="http://news.baidu.com/">百度新闻</a></li>
       <li style="padding:0 2px;"><a href="http://${randomStr()}.${mainHost}">${Unicode(
   kwsArr[3]
