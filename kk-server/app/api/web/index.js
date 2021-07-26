@@ -18,6 +18,7 @@ import { WebTplDao } from '../../dao/web/tpl';
 import { KeywordDao } from '../../dao/web/keyword';
 import { WebsiteDao } from '../../dao/web/website';
 import { ArticleDao } from '../../dao/web/article';
+import { PostDao } from '../../dao/web/post';
 import { DomainDao } from '../../dao/web/domain';
 import { SpiderDao } from '../../dao/web/spider';
 
@@ -30,6 +31,7 @@ const WebTplDaokDto = new WebTplDao();
 const websiteDto = new WebsiteDao();
 const keywordDaoDto = new KeywordDao();
 const articleDaoDto = new ArticleDao();
+const postDaoDto = new PostDao();
 const domainDaoDto = new DomainDao();
 const spiderDaoDto = new SpiderDao();
 
@@ -62,22 +64,96 @@ WebTplDaokDtoApi.get('/article', async (ctx) => {
   console.log(ctx);
   let assetsDir = config.getItem('assetsDir');
   let host = request.host;
-  if (isIp(host)) return false;
+  if (isIp(host)) {
+    return false;
+  }
+  let headerPath = ctx.request.header['x-special-proxy-header-path'];
+  let postStr = headerPath.split('/');
+  let lastStr = postStr[postStr.length - 1].split('.');
+  let postid = lastStr[lastStr.length - 2];
+  // 检查是否有缓存记录
+  let post = await postDaoDto.getItem(postid);
 
   // 数据库获取一条随机关键词数据
   const keywords = await keywordDaoDto.getRandItems();
-  // 取随机6个关键词  和随机一条文章
-  let kwsArr = await randomKey(path.join(assetsDir, keywords.path), 6);
-  let encodeKey = kwsArr.map((item) => Unicode(item));
-  await ctx.render('article1', {
-    kws: encodeKey
-  });
+  // 取随机关键词
+  let kwsArr = await randomKey(path.join(assetsDir, keywords.path), 20);
+
+  let links = [];
+  for (let index = 0; index < 40; index++) {
+    links.push(
+      `http://${host}/a/${randomStr(4, 'numeric')}/${randomStr(
+        5,
+        'numeric'
+      )}.html`
+    );
+  }
+
+  // 当前域名分组
+  let hostSplit = host.split('.');
+  let mainHost = hostSplit.length
+    ? `${hostSplit[hostSplit.length - 2]}.${hostSplit[hostSplit.length - 1]}`
+    : '';
+
+  let frendLinks = [];
+  for (let index = 0; index < 3; index++) {
+    frendLinks.push(`http://${randomStr()}.${mainHost}`);
+  }
+
+  if (!post) {
+    // 数据库获取一条随机文章数据
+    const articles = await articleDaoDto.getRandItems();
+    let articleArr = await randomKey(path.join(assetsDir, articles.path), 6);
+
+    let kws = `${kwsArr[0]},${kwsArr[1]},${kwsArr[2]}`;
+    let content = '';
+    articleArr.map((item, index) => {
+      content += `
+          <div>
+            <p>
+              ${item}
+            </p>
+            <br />
+          </div>
+        `;
+    });
+
+    const hostCategory = await domainDaoDto.getItemByHost(mainHost);
+    let category_id = hostCategory ? hostCategory.category_id : '';
+
+    let obj = {
+      host,
+      title: `${kws}`,
+      keywords: `${kws}`,
+      description: `${kws}`,
+      content: `${content}`,
+      postid,
+      path: `${headerPath}`,
+      category_id: `${category_id}`
+    };
+    await postDaoDto.createItem(obj);
+    await ctx.render('article1', { ...obj, kwsArr, links, frendLinks });
+    return;
+  }
+
+  let obj = {
+    host,
+    title: post.title,
+    keywords: post.keywords,
+    description: post.description,
+    content: post.content,
+    kwsArr,
+    links,
+    frendLinks
+  };
+
+  await ctx.render('article1', obj);
 });
 
 // 主页面逻辑入口
 WebTplDaokDtoApi.get(['/', '/proxy'], async (ctx) => {
-  let { request, url } = ctx;
-  // console.log('主页面逻辑入口: ', url);
+  let { request } = ctx;
+  // console.log('主页面逻辑入口: ', ctx);
   console.log('当前请求的域名:', request.host);
   let host = request.host;
 
@@ -138,7 +214,7 @@ WebTplDaokDtoApi.get(['/', '/proxy'], async (ctx) => {
 
     let keywordsDom = root.querySelector('meta[name="description"]');
     if (keywordsDom) {
-      keywordsDom.setAttribute('content', `${asciiKey}-${article1}`);
+      keywordsDom.setAttribute('content', `${asciiKey}-${article1[0]}`);
     } else {
       const newKeywordsDom = parse(
         `<meta name="keywords" content="${asciiKey}">`
@@ -296,10 +372,7 @@ WebTplDaokDtoApi.get(['/', '/proxy'], async (ctx) => {
       // 内页
       if (atagLink == 6) {
         as.map((item) => {
-          item.setAttribute(
-            'href',
-            `http://${host}/${randomStr()}`
-          );
+          item.setAttribute('href', `http://${host}/${randomStr()}`);
         });
       }
     }

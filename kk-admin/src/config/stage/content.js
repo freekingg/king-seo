@@ -26,6 +26,15 @@ const templateRouter = {
       inNav: true,
       icon: 'iconfont icon-tushuguanli',
     },
+    {
+      title: '内容页列表',
+      type: 'view',
+      name: 'PostList',
+      route: '/post/list',
+      filePath: 'view/content/post.vue',
+      inNav: true,
+      icon: 'iconfont icon-tushuguanli',
+    },
   ],
 }
 

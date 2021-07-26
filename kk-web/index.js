@@ -6,21 +6,28 @@ const proxy = require('koa-proxies')
 app.use(
   proxy("*", (params) => {
     let paramsArr = params['0'].split('/')
-    console.log(params);
-
-    if (paramsArr[0] === '/favicon.ico') {
-      return false;
-    }
 
     // 代理内容页
     if (paramsArr[1] === 'a' && /^\d+$/.test(paramsArr[2])) {
-      console.log("article");
       return {
         target: "http://localhost:5001/",
         rewrite: (path) => path.replace(/(.*)/, "/article"),
         events: {
           proxyReq(proxyReq, req) {
             let referer = req._parsedUrl.path || '';
+            proxyReq.setHeader("X-Special-Proxy-Header-path", referer);
+          },
+        },
+      };
+    }
+
+    if (paramsArr[1] === "favicon.ico") {
+      return {
+        target: "http://localhost:5001",
+        rewrite: (path) => path.replace(/(.*?static)/, "/static"),
+        events: {
+          proxyReq(proxyReq, req) {
+            let referer = req._parsedUrl.path || "";
             proxyReq.setHeader("X-Special-Proxy-Header-path", referer);
           },
         },
@@ -44,7 +51,6 @@ app.use(
       };
     }
 
-     console.log("proxy");
     return {
       target: "http://localhost:5001/",
       rewrite: (path) => path.replace(/(.*)/, "/proxy"),

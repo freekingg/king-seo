@@ -35,7 +35,7 @@ let spider = async (header) => {
 
   // www.geoplugin.net/json.gp?ip=
 
-  if (str.indexOf('googlebot') > 0) {
+  if (str.indexOf('Googlebot') > 0) {
     return {
       name: '谷歌蜘蛛',
       type,
@@ -65,7 +65,7 @@ let spider = async (header) => {
       host
     };
   }
-  if (str.indexOf('baiduspider') > 0) {
+  if (str.indexOf('Baiduspider') > 0) {
     return {
       name: '百度蜘蛛',
       type,

@@ -6,7 +6,7 @@
           <img src="../../assets/image/about/welcome.png" class="welcome-title" alt="" />
           <div class="subtitle">
             <div class="guide">您还可以点击林间有风官方网站，查看更多作品</div>
-            <div class="link"><a href="https://www.talelin.com" target="_blank">https://talelin.com</a></div>
+            <div class="link"><a href="https://www.kkseo.com" target="_blank">https://kkseo.com</a></div>
           </div>
         </div>
         <img class="welcome-bg" src="../../assets/image/about/header-bg.png" alt="" />

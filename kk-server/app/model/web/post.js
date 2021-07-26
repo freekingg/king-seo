@@ -8,7 +8,11 @@ class Post extends Model {
   toJSON () {
     const origin = {
       id: this.id,
+      postid: this.postid,
       title: this.title,
+      host: this.host,
+      keywords: this.keywords,
+      description: this.description,
       category: this.web_category,
       path: this.path,
       category_id: this.category_id,
@@ -25,6 +29,10 @@ Post.init(
       type: Sequelize.INTEGER,
       primaryKey: true,
       autoIncrement: true
+    },
+    postid: {
+      type: Sequelize.INTEGER,
+      allowNull: true
     },
     title: {
       type: Sequelize.STRING(50),
@@ -48,7 +56,7 @@ Post.init(
     },
     category_id: {
       type: Sequelize.INTEGER,
-      allowNull: false
+      allowNull: true
     },
     content: {
       type: Sequelize.TEXT,
