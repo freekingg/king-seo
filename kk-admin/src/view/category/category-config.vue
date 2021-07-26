@@ -65,21 +65,22 @@
       </el-tab-pane>
       <el-tab-pane label="替换管理">
         <el-form :model="dataFormReplace" :rules="dataRule" ref="dataFormReplace" label-width="100px">
-          <el-form-item label="H标签替换">
+          <el-form-item label="H标签">
             <el-radio-group v-model="dataFormReplace.htagLink">
               <el-radio :label="1">不处理</el-radio>
               <el-radio :label="2">仅关键词</el-radio>
-              <el-radio :label="3">关键词+主域名链接</el-radio>
-              <el-radio :label="4">关键词+内容页链接</el-radio>
+              <el-radio :label="3">关键词+主域名</el-radio>
+              <el-radio :label="4">关键词+内容页</el-radio>
             </el-radio-group>
           </el-form-item>
-          <el-form-item label="A标签替换">
+          <el-form-item label="A标签">
             <el-radio-group v-model="dataFormReplace.atagLink">
               <el-radio :label="1">不处理</el-radio>
               <el-radio :label="2">仅关键词</el-radio>
-              <el-radio :label="3">关键词+主域名链接</el-radio>
-              <el-radio :label="4">关键词+内容页链接</el-radio>
-              <el-radio :label="5">泛目录</el-radio>
+              <el-radio :label="3">关键词+主域名</el-radio>
+              <el-radio :label="4">关键词+内容页</el-radio>
+              <el-radio :label="5">仅内容页</el-radio>
+              <el-radio :label="6">仅泛目录</el-radio>
             </el-radio-group>
           </el-form-item>
 

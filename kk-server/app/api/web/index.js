@@ -59,6 +59,7 @@ WebTplDaokDtoApi.use(async (ctx, next) => {
 // 文章内页
 WebTplDaokDtoApi.get('/article', async (ctx) => {
   let { request } = ctx;
+  console.log(ctx);
   let assetsDir = config.getItem('assetsDir');
   let host = request.host;
   if (isIp(host)) return false;
@@ -221,7 +222,7 @@ WebTplDaokDtoApi.get(['/', '/proxy'], async (ctx) => {
           let str = `<a href="http://${host}/a/${randomStr(
             4,
             'numeric'
-          )}/${randomStr(3, 'numeric')}.html">${Unicode(kwsArr[0])}</a>`;
+          )}/${randomStr(4, 'numeric')}.html">${Unicode(kwsArr[0])}</a>`;
           const aLinkDom = parse(str);
           item.set_content('');
           item.appendChild(aLinkDom);
@@ -230,7 +231,7 @@ WebTplDaokDtoApi.get(['/', '/proxy'], async (ctx) => {
           let str = `<a href="http://${host}/a/${randomStr(
             4,
             'numeric'
-          )}/${randomStr(3, 'numeric')}.html">${Unicode(kwsArr[1])}</a>`;
+          )}/${randomStr(4, 'numeric')}.html">${Unicode(kwsArr[1])}</a>`;
           const aLinkDom = parse(str);
           item.set_content('');
           item.appendChild(aLinkDom);
@@ -239,7 +240,7 @@ WebTplDaokDtoApi.get(['/', '/proxy'], async (ctx) => {
           let str = `<a href="http://${host}/a/${randomStr(
             4,
             'numeric'
-          )}/${randomStr(3, 'numeric')}.html">${Unicode(kwsArr[2])}</a>`;
+          )}/${randomStr(4, 'numeric')}.html">${Unicode(kwsArr[2])}</a>`;
           const aLinkDom = parse(str);
           item.set_content('');
           item.appendChild(aLinkDom);
@@ -272,7 +273,7 @@ WebTplDaokDtoApi.get(['/', '/proxy'], async (ctx) => {
           item.setAttribute(
             'href',
             `http://${host}/a/${randomStr(4, 'numeric')}/${randomStr(
-              3,
+              4,
               'numeric'
             )}.html`
           );
@@ -284,7 +285,20 @@ WebTplDaokDtoApi.get(['/', '/proxy'], async (ctx) => {
         as.map((item) => {
           item.setAttribute(
             'href',
-            `http://${host}/${randomStr()})}`
+            `http://${host}/a/${randomStr(4, 'numeric')}/${randomStr(
+              4,
+              'numeric'
+            )}.html`
+          );
+        });
+      }
+
+      // 内页
+      if (atagLink == 6) {
+        as.map((item) => {
+          item.setAttribute(
+            'href',
+            `http://${host}/${randomStr()}`
           );
         });
       }
