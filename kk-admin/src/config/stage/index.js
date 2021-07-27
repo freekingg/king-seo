@@ -6,6 +6,7 @@ import websiteConfig from './website'
 import spiderConfig from './spider'
 import contentConfig from './content'
 import dashboardConfig from './dashboard'
+import shujuConfig from './shuju'
 import pluginsConfig from './plugin'
 import Utils from '@/lin/util/util'
 
@@ -56,6 +57,7 @@ let homeRouter = [
   contentConfig,
   templateConfig,
   spiderConfig,
+  shujuConfig,
   // bookConfig,
   adminConfig,
 ]
