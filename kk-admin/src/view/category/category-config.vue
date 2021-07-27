@@ -126,7 +126,7 @@
 import Config from '@/config'
 import Category from '@/model/category'
 import Domain from '@/model/domain'
-import { space2Array, isUrl } from '../../common/utils'
+import { space2Array, isUrl ,getDifferentArr} from '../../common/utils'
 
 export default {
   props: {
@@ -163,6 +163,7 @@ export default {
       Config,
       visible: false,
       id: '',
+      domains:[],
       dataFormDomain: {
         id: '',
         url: '',
@@ -205,6 +206,12 @@ export default {
          let urls = ''
          list.map(item=>{
             urls += `${item.host}\n`
+          })
+          this.domains = list.map(item=>{
+            return {
+              category_id:item.category_id,
+              host:item.host
+            }
           })
           this.dataFormDomain.url = urls
           this.globalForm.globalJs = this.data.globalJs;
@@ -272,11 +279,27 @@ export default {
           try {
             this.loading = true
             await Domain.createDomains(this.dataFormDomain)
+
+            console.log(this.domains)
+            console.log(domains)
+            if(this.domains.length > domains.length){
+              console.log('需要删除')
+              // 匹配出需要删除的域名
+              let dels = getDifferentArr(this.domains,domains)
+              console.log('dels: ', dels);
+              for (const iterator of dels) {
+                await Domain.delectDomain(iterator)
+              }
+              //
+            }
+
             this.$message({
-              message: '添加域名成功',
+              message: '处理成功',
               type: 'success',
             })
+
             this.loading = false
+            this.visible = false
           } catch (e) {
             this.loading = false
             console.log(e)

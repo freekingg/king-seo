@@ -7,6 +7,13 @@ class PositiveIdValidator extends LinValidator {
   }
 }
 
+class PositiveIdValidator2 extends LinValidator {
+  constructor () {
+    super();
+    this.host = new Rule('isNotEmpty', '必须传入域名');
+  }
+}
+
 class PaginateValidator extends LinValidator {
   constructor () {
     super();
@@ -21,4 +28,4 @@ class PaginateValidator extends LinValidator {
   }
 }
 
-export { PaginateValidator, PositiveIdValidator };
+export { PaginateValidator, PositiveIdValidator, PositiveIdValidator2 };

@@ -32,8 +32,8 @@ class Domain {
     return res
   }
 
-  async delectDomain(id) {
-    const res = await _delete(`web/domain/${id}`)
+  async delectDomain(info) {
+    const res = await _delete(`web/domain/1`, info)
     return res
   }
 
@@ -41,7 +41,7 @@ class Domain {
     return _axios({
       method: 'get',
       url: 'web/domain',
-      data
+      data,
       // handleError: true,
     })
   }

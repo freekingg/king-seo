@@ -4,7 +4,10 @@ import {
   DomainSearchValidator,
   CreateOrUpdateDomainValidator
 } from '../../validator/web/domain';
-import { PositiveIdValidator } from '../../validator/common';
+import {
+  PositiveIdValidator,
+  PositiveIdValidator2
+} from '../../validator/common';
 import path from 'path';
 import fs from 'fs-extra';
 import { getSafeParamId, readLineFile } from '../../lib/util';
@@ -26,10 +29,10 @@ articleApi.get('/', loginRequired, async ctx => {
 
 articleApi.get('/preview/data', loginRequired, async ctx => {
   const v = await new DomainSearchValidator().validate(ctx);
-  const _path = v.get('query.path')
+  const _path = v.get('query.path');
 
-  let assetsDir = config.getItem('assetsDir')
-  let content = await readLineFile(path.join(assetsDir, _path), 200)
+  let assetsDir = config.getItem('assetsDir');
+  let content = await readLineFile(path.join(assetsDir, _path), 200);
   if (!content) {
     throw new NotFound({
       code: 10022
@@ -58,8 +61,8 @@ articleApi.get('/download/:id', async ctx => {
       code: 10022
     });
   }
-  let assetsDir = config.getItem('assetsDir')
-  let dpath = path.join(assetsDir, item.path)
+  let assetsDir = config.getItem('assetsDir');
+  let dpath = path.join(assetsDir, item.path);
   let stream = fs.createReadStream(dpath);
   ctx.set({
     'Content-Type': 'application/octet-stream',
@@ -108,7 +111,7 @@ articleApi.get('/category/:id', loginRequired, async ctx => {
   //     code: 10022
   //   });
   // }
-  ctx.body = items
+  ctx.body = items;
 });
 
 articleApi.put('/:id', loginRequired, async ctx => {
@@ -120,20 +123,19 @@ articleApi.put('/:id', loginRequired, async ctx => {
   });
 });
 
-articleApi.linDelete(
-  'deleteItem',
-  '/:id',
+articleApi.linDelete('deleteItem', '/:id',
   articleApi.permission('删除域名'),
   groupRequired,
   async ctx => {
-    const v = await new PositiveIdValidator().validate(ctx);
-    const id = v.get('path.id');
-    await domainDto.deleteItem(id);
+    const v = await new PositiveIdValidator2().validate(ctx);
+    const host = v.get('query.host');
+    console.log('host: ', host);
+    const category_id = v.get('query.category_id');
+    await domainDto.deleteItem(host, category_id);
     ctx.success({
       code: 14
     });
   }
 );
-
 
 module.exports = { articleApi, [disableLoading]: false };

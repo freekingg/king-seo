@@ -23,3 +23,15 @@ export const isUrl = url => {
   const reg = /^([hH][tT]{2}[pP]:\/\/|[hH][tT]{2}[pP][sS]:\/\/)(([A-Za-z0-9-~]+)\.)+([A-Za-z0-9-~\/])+$/
   return reg.test(url)
 }
+
+export const getDifferentArr = (allArr, partArr)=> {
+  for (let i = allArr.length - 1; i >= 0; i--) {
+    for (let j = 0; j < partArr.length; j++) {
+      if (allArr[i].host === partArr[j].host) {
+        allArr.splice(i, 1)
+        break
+      }
+    }
+  }
+  return allArr
+}

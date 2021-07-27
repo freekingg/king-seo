@@ -97,10 +97,12 @@ class DomainDao {
     await item.save();
   }
 
-  async deleteItem (id) {
+  async deleteItem (host, category_id) {
+    console.log(host, category_id);
     const item = await Modals.findOne({
       where: {
-        id
+        host,
+        category_id
       }
     });
     if (!item) {
@@ -108,7 +110,7 @@ class DomainDao {
         code: 10022
       });
     }
-    item.destroy();
+    item.destroy({ force: true });
   }
 }
 

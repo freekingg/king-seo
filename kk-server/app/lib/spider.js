@@ -133,16 +133,16 @@ let spider = async (header) => {
       host
     };
   }
-  if (str.indexOf("MSIE") > 0) {
+  if (str.indexOf('MSIE') > 0) {
     return {
-      name: "360蜘蛛",
+      name: '360蜘蛛',
       type,
       ip,
       path,
       country,
-      host,
+      host
     };
-  },
+  }
   if (str.indexOf('360spider') > 0) {
     return {
       name: '360蜘蛛',
