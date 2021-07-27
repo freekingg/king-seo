@@ -5,6 +5,7 @@ import templateConfig from './template'
 import websiteConfig from './website'
 import spiderConfig from './spider'
 import contentConfig from './content'
+import dashboardConfig from './dashboard'
 import pluginsConfig from './plugin'
 import Utils from '@/lin/util/util'
 
@@ -49,6 +50,7 @@ let homeRouter = [
     inNav: false,
     icon: 'iconfont icon-rizhiguanli',
   },
+  dashboardConfig,
   websiteConfig,
   categoryConfig,
   contentConfig,
@@ -82,7 +84,7 @@ function filterPlugin(data) {
 
 filterPlugin(homeRouter)
 
-homeRouter = homeRouter.concat(plugins)
+// homeRouter = homeRouter.concat(plugins)
 
 // 处理顺序
 homeRouter = Utils.sortByOrder(homeRouter)

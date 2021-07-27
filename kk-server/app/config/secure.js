@@ -2,12 +2,12 @@
 
 module.exports = {
   db: {
-    database: 'kk-seo',
+    database: 'king-seo',
     host: 'localhost',
     dialect: 'mysql',
     port: 3306,
-    username: 'kk-seo',
-    password: 'sZEMzkYPLhASChzc',
+    username: 'root',
+    password: '123456',
     logging: false,
     timezone: '+08:00'
   },
