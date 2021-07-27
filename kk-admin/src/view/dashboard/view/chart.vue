@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <el-row :gutter="20">
-      <el-col :span="16">
+      <el-col :span="24">
         <el-row :gutter="20">
           <el-col :span="12">
             <div class="grid-content bg-purple">
@@ -22,11 +22,11 @@
           </el-col>
         </el-row>
       </el-col>
-      <el-col :span="8" class="none">
+      <!-- <el-col :span="8" class="none">
         <div class="grid-content bg-purple">
           <rose></rose>
         </div>
-      </el-col>
+      </el-col> -->
     </el-row>
     <el-row :gutter="20">
       <el-col :span="16">

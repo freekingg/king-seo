@@ -2,7 +2,7 @@
   <div class="container">
     <div class="left">
       <div class="l-side">
-        <div class="title">6月新增订单</div>
+        <div class="title">今日蜘蛛总量</div>
         <div class="num-box">
           <div class="shape"></div>
           <div class="num">1274</div>
