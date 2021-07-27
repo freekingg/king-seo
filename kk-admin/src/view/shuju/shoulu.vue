@@ -18,6 +18,11 @@
           </template>
         </el-table-column>
         <el-table-column prop="update_time" label="创建时间" header-align="center" align="center" />
+        <el-table-column label="操作" fixed="right" header-align="center" align="center" width="100">
+          <template slot-scope="scope">
+            <el-button type="success" size="mini" @click="search(scope.row)">查询</el-button>
+          </template>
+        </el-table-column>
       </el-table>
     </div>
 
@@ -43,7 +48,7 @@
 
 <script>
 import Domain from '@/model/domain'
-import Template from '@/model/template'
+import Shoulu from '@/model/shoulu'
 import AddOrUpdate from './template-add-or-update.vue'
 import mixinViewModule from '@/common/mixin/view-module'
 
@@ -72,6 +77,10 @@ export default {
     this.getDomains()
   },
   methods: {
+    async search(row){
+      let r = await Shoulu.getSearch(row.host)
+      console.log('r: ', r);
+    },
     async getDomains(id) {
       const {list,total} = await Domain.getDomains()
       console.log(list)
