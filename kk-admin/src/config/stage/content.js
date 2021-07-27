@@ -27,6 +27,15 @@ const templateRouter = {
       icon: 'iconfont icon-tushuguanli',
     },
     {
+      title: '内页标题',
+      type: 'view',
+      name: 'SubList',
+      route: '/sub/list',
+      filePath: 'view/content/sub.vue',
+      inNav: true,
+      icon: 'iconfont icon-tushuguanli',
+    },
+    {
       title: '内容页列表',
       type: 'view',
       name: 'PostList',

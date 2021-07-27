@@ -5,8 +5,8 @@ import linCmsUi from '@/plugin/lin-cms-ui/stage-config'
 
 const pluginsConfig = [
   chart,
-  // custom,
-  // linCmsUi,
+  custom,
+  linCmsUi,
 ]
 
 export default pluginsConfig

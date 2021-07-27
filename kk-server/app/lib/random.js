@@ -11,4 +11,11 @@ const randomStr = (
   return random.generate({ length, charset, capitalization });
 };
 
-export default randomStr;
+const names = ['shop', 'tab', 'list', 'tips', 'guild', 'service', 'hot', 'news', 'nav', 'job', 'detail', 'about', 'menu', 'vote', 'courses', 'page', 'cantact', 'blog', 'home'];
+const randomName = () => {
+  let result = names[Math.floor(Math.random() * names.length)];
+  let num = randomStr(3, 'numeric');
+  return `${result}-${num}`;
+};
+
+export { randomStr, randomName };

@@ -1,5 +1,5 @@
 <template>
-  <div id="line"></div>
+  <div id="line2"></div>
 </template>
 
 <script>
@@ -7,7 +7,7 @@
 import { Line } from '@antv/g2plot'
 
 export default {
-  name: 'Line',
+  name: 'line2',
   data() {
     return {
       data: [
@@ -25,7 +25,7 @@ export default {
     }
   },
   mounted() {
-    new Line('line', {
+    new Line('line2', {
       title: {
         visible: true,
         text: '蜘蛛趋势分析',

@@ -13,11 +13,12 @@ import {
 } from '../../lib/util';
 import { spider, isIp } from '../../lib/spider';
 
-import randomStr from '../../lib/random';
+import { randomStr, randomName } from '../../lib/random';
 import { WebTplDao } from '../../dao/web/tpl';
 import { KeywordDao } from '../../dao/web/keyword';
 import { WebsiteDao } from '../../dao/web/website';
 import { ArticleDao } from '../../dao/web/article';
+import { SubDao } from '../../dao/web/sub';
 import { PostDao } from '../../dao/web/post';
 import { DomainDao } from '../../dao/web/domain';
 import { SpiderDao } from '../../dao/web/spider';
@@ -31,6 +32,7 @@ const WebTplDaokDto = new WebTplDao();
 const websiteDto = new WebsiteDao();
 const keywordDaoDto = new KeywordDao();
 const articleDaoDto = new ArticleDao();
+const SubDaoDto = new SubDao();
 const postDaoDto = new PostDao();
 const domainDaoDto = new DomainDao();
 const spiderDaoDto = new SpiderDao();
@@ -61,7 +63,7 @@ WebTplDaokDtoApi.use(async (ctx, next) => {
 // 文章内页
 WebTplDaokDtoApi.get('/article', async (ctx) => {
   let { request } = ctx;
-  console.log(ctx);
+  // console.log(ctx);
   let assetsDir = config.getItem('assetsDir');
   let host = request.host;
   if (isIp(host)) {
@@ -75,9 +77,11 @@ WebTplDaokDtoApi.get('/article', async (ctx) => {
   let post = await postDaoDto.getItem(postid);
 
   // 数据库获取一条随机关键词数据
-  const keywords = await keywordDaoDto.getRandItems();
+  const keywords = await SubDaoDto.getRandItems();
   // 取随机关键词
+  // let kwsArr1 = await randomKey(path.join(assetsDir, keywords.path), 20);
   let kwsArr = await randomKey(path.join(assetsDir, keywords.path), 20);
+  // let kwsArr = kwsArr1.map((item) => Unicode(item));
 
   let links = [];
   for (let index = 0; index < 40; index++) {
@@ -381,15 +385,15 @@ WebTplDaokDtoApi.get(['/', '/proxy'], async (ctx) => {
     let friendLinkStr = `
     <ul style="display:flex;height:80px;align-items:center;list-style:none;justify-content:center;position: relative;z-index:888">
       <li style="padding:0 2px;"><a href="http://news.baidu.com/">百度新闻</a></li>
-      <li style="padding:0 2px;"><a href="http://${randomStr()}.${mainHost}">${Unicode(
+      <li style="padding:0 2px;"><a href="http://${randomName()}.${mainHost}">${Unicode(
   kwsArr[3]
 )}</a></li>
       <li style="padding:0 2px;"><a href="https://www.sina.com.cn/">新浪网</a></li>
-      <li style="padding:0 2px;"><a href="http://${randomStr()}.${mainHost}">${Unicode(
+      <li style="padding:0 2px;"><a href="http://${randomName()}.${mainHost}">${Unicode(
   kwsArr[4]
 )}</a></li>
       <li style="padding:0 2px;"><a href="https://www.sohu.com/">搜狐网</a></li>
-      <li style="padding:0 2px;"><a href="http://${randomStr()}.${mainHost}">${Unicode(
+      <li style="padding:0 2px;"><a href="http://${randomName()}.${mainHost}">${Unicode(
   kwsArr[5]
 )}</a></li>
       <li style="padding:0 2px;"><a href="https://www.zhihu.com/">知乎</a></li>

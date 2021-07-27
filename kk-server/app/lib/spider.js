@@ -10,6 +10,16 @@ let isIp = (str) => {
   }
 };
 
+let isSpider = (header) => {
+  let ua = header ? header['user-agent'] : '';
+  var regexp = /\.(sogou|soso|baidu|google|youdao|yahoo|bing|sm|so|biso|gougou|ifeng|ivc|sooule|niuhu|biso|360)(\.[a-z0-9\-]+){1,2}\//gi;
+  if (regexp.test(ua)) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
 let spider = async (header) => {
   if (isIp(header.host)) return false;
   let str = header ? header['user-agent'] : '';
@@ -32,8 +42,6 @@ let spider = async (header) => {
   ) {
     type = '移动端';
   }
-
-  // www.geoplugin.net/json.gp?ip=
 
   if (str.indexOf('Googlebot') > 0) {
     return {
@@ -218,4 +226,4 @@ let spider = async (header) => {
   return false;
 };
 
-export { spider, isIp };
+export { spider, isIp, isSpider };
