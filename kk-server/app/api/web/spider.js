@@ -30,6 +30,12 @@ SpiderApi.get('/:id', loginRequired, async ctx => {
   ctx.json(item);
 });
 
+SpiderApi.get('/test/tongji', async (ctx) => {
+  const v = await new SpiderSearchValidator().validate(ctx);
+  const items = await spiderDto.getTongji(v);
+  ctx.json(items);
+});
+
 SpiderApi.get('/', loginRequired, async ctx => {
   const v = await new SpiderSearchValidator().validate(ctx);
   const items = await spiderDto.getItems(v);

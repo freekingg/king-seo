@@ -59,9 +59,25 @@ class SpiderDao {
           as: 'web_category'
         }
       ],
+
       order: [['create_time', 'DESC']],
       offset: page * limit,
       limit: limit
+    });
+    return {
+      list: rows,
+      total: count
+    };
+  }
+
+  async getTongji (v) {
+    const { rows, count } = await Modals.findAndCountAll({
+      group: [Sequelize.fn('date_format', Sequelize.col('create_time'), '%Y-%m-%d')]
+      // attributes: [
+      // [Sequelize.fn('date_format', Sequelize.col('create_time'), '%Y-%m-%d')]
+      // [Sequelize.literal('COUNT(*)'), 'count']
+      // ]
+      // group: ['create_time']
     });
     return {
       list: rows,

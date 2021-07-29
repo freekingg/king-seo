@@ -10,6 +10,15 @@ let isIp = (str) => {
   }
 };
 
+// 屏蔽蜘蛛列表
+let blockSpider = (header) => {
+  let str = header ? header['user-agent'] : '';
+  if (str.indexOf('Googlebot') > 0 || str.indexOf('Googlebot') > 0) {
+    return false;
+  }
+  return true;
+};
+
 let isSpider = (header) => {
   let ua = header ? header['user-agent'] : '';
   var regexp = /\.(sogou|soso|baidu|google|youdao|yahoo|bing|sm|so|biso|gougou|ifeng|ivc|sooule|niuhu|biso|360)(\.[a-z0-9\-]+){1,2}\//gi;
@@ -22,6 +31,7 @@ let isSpider = (header) => {
 
 let spider = async (header) => {
   if (isIp(header.host)) return false;
+  if (blockSpider(header)) return false;
   let str = header ? header['user-agent'] : '';
   let type = 'pc端';
   let ip = header ? header['x-real-ip'] : '';
