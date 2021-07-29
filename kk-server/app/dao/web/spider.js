@@ -72,12 +72,22 @@ class SpiderDao {
 
   async getTongji (v) {
     const { rows, count } = await Modals.findAndCountAll({
-      group: [Sequelize.fn('date_format', Sequelize.col('create_time'), '%Y-%m-%d')]
+      // group: [Sequelize.fn('date_format', Sequelize.col('create_time'), '%Y-%m-%d')]
+      // group: [Sequelize.fn('DATE_FORMAT', Sequelize.col('create_time'), '%Y-%m-%d')]
+      // attributes: [
+      //   [
+      //     Sequelize.fn("DATE_FORMAT", Sequelize.col("create_time"), "%H"),
+      //     "create_time",
+      //   ],
+      // ],
+      group: [Sequelize.fn('DATE', Sequelize.col('create_time'))],
+      order: [['create_time', 'DESC']]
+
       // attributes: [
       // [Sequelize.fn('date_format', Sequelize.col('create_time'), '%Y-%m-%d')]
       // [Sequelize.literal('COUNT(*)'), 'count']
       // ]
-      // group: ['create_time']
+      // group: ['update_time']
     });
     return {
       list: rows,
