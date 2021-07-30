@@ -43,6 +43,7 @@ class SpiderDao {
     const page = v.get('query.page');
     const limit = v.get('query.count');
     const host = v.get('query.host') || '';
+    const name = v.get('query.name') || '';
     const condition = {};
     v.get('query.category_id') &&
       set(condition, 'category_id', v.get('query.category_id'));
@@ -57,6 +58,9 @@ class SpiderDao {
       where: Object.assign({}, condition, {
         host: {
           [Sequelize.Op.like]: `%${host}%`
+        },
+        name: {
+          [Sequelize.Op.like]: `%${name}%`
         }
       }),
       include: [

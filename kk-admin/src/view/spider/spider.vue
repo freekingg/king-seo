@@ -8,6 +8,9 @@
             <el-input v-model="dataForm.host" placeholder="请输入域名" clearable />
           </el-form-item>
           <el-form-item>
+            <el-input v-model="dataForm.name" placeholder="请输入蜘蛛名称" clearable />
+          </el-form-item>
+          <el-form-item>
            <el-select v-model="dataForm.category_id" placeholder="请选择分组" clearable>
             <el-option
               v-for="item in category"
@@ -107,7 +110,7 @@ export default {
   },
   mixins: [mixinViewModule],
   async created() {
-    const statistics = await Spider.getStatistics()
+    // const statistics = await Spider.getStatistics()
     // this.tags = tags.list
   },
     computed: {
