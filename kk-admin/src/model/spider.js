@@ -15,6 +15,11 @@ class Spider {
     return res
   }
 
+  async getStatistics() {
+    const res = await get(`web/spider/statistics/tongji`)
+    return res
+  }
+
   async editItem(id, info) {
     const res = await put(`web/spider/${id}`, info)
     return res

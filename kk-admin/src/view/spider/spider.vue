@@ -17,6 +17,10 @@
             </el-option>
           </el-select>
           </el-form-item>
+          <el-form-item>
+           <lin-date-picker @dateChange="handleDateChange" ref="searchDate" class="date"> </lin-date-picker>
+          </el-form-item>
+
       </el-form>
       </el-col>
 
@@ -26,6 +30,28 @@
         </el-button-group>
       </el-col>
     </el-row>
+    <!-- <div class="quantity-statistics">
+      <div class="quantity-item">
+        <div class="quantity-detail">
+          <div class="quantity-detail-box">
+            <div class="quantity-title">今日访问量</div>
+            <div class="quantity-border-line"></div>
+            <div class="quantity">11,590</div>
+          </div>
+        </div>
+        <div class="quantity-icon"><img src="../../assets/image/about/icon.png" alt="" /></div>
+      </div>
+      <div class="quantity-item">
+        <div class="quantity-detail">
+          <div class="quantity-detail-box">
+            <div class="quantity-title">总访问量</div>
+            <div class="quantity-border-line"></div>
+            <div class="quantity">51,862</div>
+          </div>
+        </div>
+        <div class="quantity-icon"><img src="../../assets/image/about/icon.png" alt="" /></div>
+      </div>
+    </div> -->
     <div class="wrap">
       <el-table size="mini" v-loading="dataListLoading" :data="dataList" border>
         <el-table-column prop="name" label="名字" header-align="center" align="center" />
@@ -66,6 +92,7 @@
 
 <script>
 import  Spider from '@/model/spider'
+import LinDatePicker from '@/component/base/date-picker/lin-date-picker'
 import AddOrUpdate from './spider-add-or-update'
 import Config from './spider-config.vue'
 import mixinViewModule from '@/common/mixin/view-module'
@@ -76,10 +103,11 @@ export default {
   components: {
     AddOrUpdate,
     Config,
+    LinDatePicker
   },
   mixins: [mixinViewModule],
   async created() {
-    // const tags = await Tag.getTags()
+    const statistics = await Spider.getStatistics()
     // this.tags = tags.list
   },
     computed: {
@@ -104,6 +132,12 @@ export default {
     }
   },
   methods: {
+    handleDateChange(date) {
+      this.searchDate = date
+      this.dataForm.start = this.searchDate[0]
+      this.dataForm.end = this.searchDate[1]
+
+    },
     matchTag(tag_ids) {
       return this.tags.filter(item => tag_ids.includes(`${item.id}`))
     },
@@ -120,4 +154,60 @@ export default {
 .el-tag {
   margin-bottom: 3px;
 }
+.quantity-statistics {
+    display: flex;
+    margin-top: 20px;
+    height: 90px;
+    padding: 0 20px;
+    .quantity-item {
+      display: flex;
+      width: 23%;
+      height: 100%;
+      margin-right: 10px;
+      background: rgba(255, 255, 255, 1);
+      box-shadow: 0px 2px 14px 0px rgba(243, 243, 243, 1);
+      border-radius: 8px;
+      .quantity-detail {
+        flex: 1;
+        .quantity-detail-box {
+          margin: 12px 0 0 30px;
+          .quantity-title {
+            margin-bottom: 2px;
+            height: 20px;
+            line-height: 20px;
+            color: #495468;
+            font-size: 14px;
+            font-weight: 400;
+          }
+          .quantity-border-line {
+            width: 46px;
+            height: 2px;
+            background: rgba(73, 84, 104, 1);
+          }
+          .quantity {
+            margin-top: 7px;
+            height: 48px;
+            font-size: 32px;
+            color: rgba(73, 84, 104, 1);
+            line-height: 38px;
+            letter-spacing: 2px;
+          }
+        }
+      }
+      .quantity-icon {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 90px;
+        height: 100%;
+        background: rgba(69, 119, 255, 0.1);
+        border-top-right-radius: 8px;
+        border-bottom-right-radius: 8px;
+        img {
+          width: 28px;
+          height: 33px;
+        }
+      }
+    }
+  }
 </style>

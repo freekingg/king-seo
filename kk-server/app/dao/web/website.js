@@ -31,6 +31,11 @@ class WebsiteDao {
     const host = v.get('query.host') || '';
     const condition = {};
     v.get('query.category_id') && set(condition, 'category_id', v.get('query.category_id'));
+    v.get('query.start') &&
+      v.get('query.end') &&
+      set(condition, 'create_time', {
+        [Sequelize.Op.between]: [v.get('query.start'), v.get('query.end')]
+      });
 
     const { rows, count } = await Website.findAndCountAll({
       where: Object.assign({}, condition, {

@@ -17,6 +17,9 @@
             </el-option>
           </el-select>
           </el-form-item>
+          <el-form-item>
+           <lin-date-picker @dateChange="handleDateChange" ref="searchDate" class="date"> </lin-date-picker>
+          </el-form-item>
       </el-form>
       </el-col>
 
@@ -69,6 +72,7 @@
 </template>
 
 <script>
+import LinDatePicker from '@/component/base/date-picker/lin-date-picker'
 import Website from '@/model/website'
 import AddOrUpdate from './website-add-or-update'
 import Config from './website-config.vue'
@@ -80,6 +84,7 @@ export default {
   components: {
     AddOrUpdate,
     Config,
+    LinDatePicker
   },
   mixins: [mixinViewModule],
   async created() {
@@ -108,6 +113,12 @@ export default {
     }
   },
   methods: {
+    handleDateChange(date) {
+      this.searchDate = date
+      this.dataForm.start = this.searchDate[0]
+      this.dataForm.end = this.searchDate[1]
+
+    },
     matchTag(tag_ids) {
       return this.tags.filter(item => tag_ids.includes(`${item.id}`))
     },
